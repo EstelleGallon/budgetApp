@@ -8,6 +8,7 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class AccountBalanceAdapter extends RecyclerView.Adapter<AccountBalanceAdapter.BalanceViewHolder> {
@@ -32,6 +33,15 @@ public class AccountBalanceAdapter extends RecyclerView.Adapter<AccountBalanceAd
         Pair<String, String> balance = balances.get(position);
         holder.accountTypeTextView.setText(balance.first); // Account type
         holder.accountBalanceTextView.setText(balance.second); // Account balance
+
+        // update circle based on position
+        if (position == 0) {
+            holder.circleChecking.setImageResource(R.drawable.ic_circle_filled);
+            holder.circleSaving.setImageResource(R.drawable.ic_circle_unfilled);
+        } else {
+            holder.circleChecking.setImageResource(R.drawable.ic_circle_unfilled);
+            holder.circleSaving.setImageResource(R.drawable.ic_circle_filled);
+        }
     }
 
     @Override
@@ -42,11 +52,15 @@ public class AccountBalanceAdapter extends RecyclerView.Adapter<AccountBalanceAd
     public static class BalanceViewHolder extends RecyclerView.ViewHolder {
         TextView accountTypeTextView;
         TextView accountBalanceTextView;
+        ImageView circleSaving;
+        ImageView circleChecking;
 
         public BalanceViewHolder(@NonNull View itemView) {
             super(itemView);
             accountTypeTextView = itemView.findViewById(R.id.tvAccountType);
             accountBalanceTextView = itemView.findViewById(R.id.tvAccountBalance);
+            circleSaving = itemView.findViewById(R.id.circleSaving);
+            circleChecking = itemView.findViewById(R.id.circleChecking);
         }
     }
 

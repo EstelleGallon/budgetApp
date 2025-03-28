@@ -1,10 +1,12 @@
 package fr.enst.budgetapp.ui.overview;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,9 +38,10 @@ public class overviewFragment extends Fragment {
 
         // Sample data for account balances (TODO: replace with actual data)
         List<Pair<String, String>> balances = Arrays.asList(
-                new Pair<>("Checking Account", "1,200.00€"),
-                new Pair<>("Savings Account", "5,000.00€")
+                new Pair<>("Checking Account", "1 200,00€"),
+                new Pair<>("Savings Account", "5 000,00€")
         );
+
         AccountBalanceAdapter adapter = new AccountBalanceAdapter(balances);
         viewPager.setAdapter(adapter);
 

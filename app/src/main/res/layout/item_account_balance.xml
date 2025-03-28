@@ -1,24 +1,82 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
+    android:orientation="vertical"
+    android:background="@color/light_blueish_gray"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvAccountType"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Account Type"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Balance"
+            android:textSize="28sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAccountType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="Account Type"
+            android:textSize="18sp"
+            android:textColor="@color/light_blue"/>
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tvAccountBalance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="$0.00"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:text="0.00€"
+        android:textSize="50sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvIncomingAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="8dp"
+        android:text="Incoming: 0.00€"
+        android:textSize="16sp"
+        android:textColor="@color/orange"
+        android:textStyle="bold"/>
+
+    <!-- circles for selection -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:paddingTop="8dp">
+
+        <ImageView
+            android:id="@+id/circleChecking"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_circle_filled"
+            android:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/circleSaving"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_circle_unfilled"
+            android:visibility="visible"/>
+
+    </LinearLayout>
 </LinearLayout>
