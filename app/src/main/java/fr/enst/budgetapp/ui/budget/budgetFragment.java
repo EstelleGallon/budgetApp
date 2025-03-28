@@ -1,4 +1,4 @@
-package fr.enst.budgetapp.ui.notifications;
+package fr.enst.budgetapp.ui.budget;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.enst.budgetapp.databinding.FragmentNotificationsBinding;
+import fr.enst.budgetapp.databinding.FragmentBudgetBinding;
 
-public class NotificationsFragment extends Fragment {
+public class budgetFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentBudgetBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        budgetViewModel budgetViewModel =
+                new ViewModelProvider(this).get(budgetViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentBudgetBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textBudget;
+        budgetViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

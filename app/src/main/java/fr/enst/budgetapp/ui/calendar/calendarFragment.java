@@ -1,4 +1,4 @@
-package fr.enst.budgetapp.ui.dashboard;
+package fr.enst.budgetapp.ui.calendar;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.enst.budgetapp.databinding.FragmentDashboardBinding;
+import fr.enst.budgetapp.databinding.FragmentCalendarBinding;
+import fr.enst.budgetapp.ui.calendar.calendarViewModel;
 
-public class DashboardFragment extends Fragment {
+public class calendarFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentCalendarBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        calendarViewModel calendarViewModel =
+                new ViewModelProvider(this).get(calendarViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentCalendarBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textCalendar;
+        calendarViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

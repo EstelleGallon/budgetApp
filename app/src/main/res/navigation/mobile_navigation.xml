@@ -3,23 +3,29 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_overview">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="fr.enst.budgetapp.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_overview"
+        android:name="fr.enst.budgetapp.ui.overview.overviewFragment"
+        android:label="@string/title_overview"
+        tools:layout="@layout/fragment_overview" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="fr.enst.budgetapp.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_list"
+        android:name="fr.enst.budgetapp.ui.list.listFragment"
+        android:label="@string/title_list"
+        tools:layout="@layout/fragment_list" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="fr.enst.budgetapp.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_budget"
+        android:name="fr.enst.budgetapp.ui.budget.budgetFragment"
+        android:label="@string/title_budget"
+        tools:layout="@layout/fragment_budget" />
+
+    <fragment
+        android:id="@+id/navigation_calendar"
+        android:name="fr.enst.budgetapp.ui.calendar.calendarFragment"
+        android:label="@string/title_calendar"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>
