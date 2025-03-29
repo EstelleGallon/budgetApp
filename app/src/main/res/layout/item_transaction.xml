@@ -1,0 +1,43 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="25dp"
+    android:paddingEnd="25dp"
+    android:paddingBottom="15dp">
+
+    <!-- Category Name on the left -->
+    <TextView
+        android:id="@+id/tvCategoryName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Category"
+        android:textSize="16sp"
+        android:textColor="@android:color/black" />
+
+    <!-- Money Amount and Date on the right -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvMoneyAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00,00€"
+            android:textSize="16sp"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/tvTransactionDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01/01/2025"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+</LinearLayout>
