@@ -5,7 +5,6 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -16,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.anychart.APIlib;
 import com.anychart.AnyChart;
 import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
@@ -25,6 +25,7 @@ import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
+import com.anychart.scales.Linear;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,9 +41,14 @@ import fr.enst.budgetapp.databinding.FragmentOverviewBinding;
 public class overviewFragment extends Fragment {
 
     private FragmentOverviewBinding binding;
-    private Calendar calendar;
-    private TextView tvMonthYear;
+    private Calendar calendarSpendingsPerCategory;
+    private Calendar calendarExpensesVsIncome;
+
+    private TextView tvMonthYearSpendingsPerCategory;
+    private TextView tvMonthYearExpensesVsIncome;
+
     private AnyChartView barChart;
+    private AnyChartView lineChart;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -78,38 +84,115 @@ public class overviewFragment extends Fragment {
         recyclerView.setAdapter(transactionAdapter);
 
         // Initialize the bar chart
-        tvMonthYear = root.findViewById(R.id.tvMonthYear);
+        tvMonthYearSpendingsPerCategory= root.findViewById(R.id.tvMonthYear);
         barChart = root.findViewById(R.id.chartSpendingPerCategory);
+        APIlib.getInstance().setActiveAnyChartView(barChart);
         ImageButton btnPrevMonth = root.findViewById(R.id.btnPrevMonth);
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonth);
 
-        calendar = Calendar.getInstance();
-        updateMonthYear();
+        calendarSpendingsPerCategory = Calendar.getInstance();
+        updateMonthYear(tvMonthYearSpendingsPerCategory, calendarSpendingsPerCategory);
 
         btnPrevMonth.setOnClickListener(v -> {
-            calendar.add(Calendar.MONTH, -1);
-            updateMonthYear();
-            updateChart();
+            calendarSpendingsPerCategory.add(Calendar.MONTH, -1);
+            updateMonthYear(tvMonthYearSpendingsPerCategory, calendarSpendingsPerCategory);
+            APIlib.getInstance().setActiveAnyChartView(barChart);
+            updateBarChart();
         });
 
         btnNextMonth.setOnClickListener(v -> {
-            calendar.add(Calendar.MONTH, 1);
-            updateMonthYear();
-            updateChart();
+            calendarSpendingsPerCategory.add(Calendar.MONTH, 1);
+            updateMonthYear(tvMonthYearSpendingsPerCategory, calendarSpendingsPerCategory);
+            APIlib.getInstance().setActiveAnyChartView(barChart);
+            updateBarChart();
         });
 
         // Set up the bar chart with hardcoded values
-        updateChart();
+        updateBarChart();
+
+
+        // Initialize the line chart
+        tvMonthYearExpensesVsIncome = root.findViewById(R.id.tvMonthYear2);
+        lineChart = root.findViewById(R.id.chartExpensesVsIncome);
+        APIlib.getInstance().setActiveAnyChartView(lineChart);
+        ImageButton btnPrevMonthExpensesVsIncome = root.findViewById(R.id.btnPrevMonth2);
+        ImageButton btnNextMonthExpensesVsIncome = root.findViewById(R.id.btnNextMonth2);
+        calendarExpensesVsIncome = Calendar.getInstance();
+
+        updateMonthYear(tvMonthYearExpensesVsIncome, calendarExpensesVsIncome);
+        btnPrevMonthExpensesVsIncome.setOnClickListener(v -> {
+            calendarExpensesVsIncome.add(Calendar.MONTH, -1);
+            updateMonthYear(tvMonthYearExpensesVsIncome, calendarExpensesVsIncome);
+            APIlib.getInstance().setActiveAnyChartView(lineChart);
+            updateLineChart();
+        });
+        btnNextMonthExpensesVsIncome.setOnClickListener(v -> {
+            calendarExpensesVsIncome.add(Calendar.MONTH, 1);
+            updateMonthYear(tvMonthYearExpensesVsIncome, calendarExpensesVsIncome);
+            APIlib.getInstance().setActiveAnyChartView(lineChart);
+            updateLineChart();
+        });
+
+        updateLineChart();
+
 
         return root;
     }
 
-    private void updateMonthYear() {
+    private void updateMonthYear(TextView textView,  Calendar calendar) {
         String monthYear = android.text.format.DateFormat.format("MMMM yyyy", calendar).toString();
-        tvMonthYear.setText(monthYear);
+        textView.setText(monthYear);
     }
 
-    private void updateChart() {
+    private void updateLineChart(){
+        // Create a line chart
+        Cartesian line = AnyChart.line();
+
+        // Set the title of the chart
+        line.title("Cumulative Expenses vs. Income");
+
+        // Configure tooltips
+        line.tooltip()
+                .positionMode(TooltipPositionMode.POINT)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .position(Position.CENTER_BOTTOM)
+                .format("{%Value}€");
+
+
+        line.interactivity().hoverMode(HoverMode.BY_X);
+        line.animation(true);
+
+        line.yAxis(0).labels().format("{%Value}€");
+
+        Linear xScale = Linear.instantiate();
+        xScale.minimum(1);
+        xScale.maximum(31);
+        line.xScale(xScale);
+        line.xAxis(0).title("Days").labels().format("{%Value}");
+
+        // Hardcoded data for testing
+        List<DataEntry> expensesData = new ArrayList<>();
+        expensesData.add(new ValueDataEntry("1", 50));
+        expensesData.add(new ValueDataEntry("2", 100));
+        expensesData.add(new ValueDataEntry("3", 150));
+        expensesData.add(new ValueDataEntry("4", 200));
+
+        List<DataEntry> incomeData = new ArrayList<>();
+        incomeData.add(new ValueDataEntry("1", 100));
+        incomeData.add(new ValueDataEntry("2", 200));
+        incomeData.add(new ValueDataEntry("3", 300));
+        incomeData.add(new ValueDataEntry("4", 400));
+
+
+        // Add series for expenses and income
+        line.line(expensesData).name("Expenses").color("#FF5733");
+        line.line(incomeData).name("Income").color("#33FF57");
+
+        // Attach the chart to the AnyChartView
+        lineChart.setChart(line);
+    }
+
+    private void updateBarChart() {
         // Create a bar chart
         Cartesian bar = AnyChart.column();
 
