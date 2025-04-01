@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
+import fr.enst.budgetapp.DateTransactionsAdapter;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
 import fr.enst.budgetapp.TransactionAdapter;
@@ -85,7 +86,8 @@ public class listFragment extends Fragment {
                 new Transaction("Entertainment", "30,00€", "2023-03-10")
         );
 
-        // grouping transactions by date
+        // prepare data:
+        // 1) grouping transactions by date
         HashMap<String, List<Transaction>> transactionsByDate = new HashMap<>();
         for (Transaction transaction : transactions) {
             String date = transaction.getTransactionDate();
@@ -95,66 +97,23 @@ public class listFragment extends Fragment {
             transactionsByDate.get(date).add(transaction);
         }
 
-        // Sort the dates in descending order
+        // 2) sort dates by descending order
         List<String> sortedDates = new ArrayList<>(transactionsByDate.keySet());
         sortedDates.sort(Collections.reverseOrder());
 
-        // parent container
-        LinearLayout containerForTransactions = root.findViewById(R.id.containerForTransactions);
-        containerForTransactions.removeAllViews();
-
-        // Get today's date as a String
-        LocalDate today = null;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            today = LocalDate.now();
-        }
-        String todayDate = today.toString();
-
+        // 3) create list for recycler view
+        List<Pair<String, List<Transaction>>> dateTransactionPairs = new ArrayList<>();
         for (String date : sortedDates) {
-            List<Transaction> dailyTransactions = transactionsByDate.get(date);
-
-            CardView cardView = new CardView(getContext());
-            cardView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            cardView.setCardElevation(4);
-            cardView.setRadius(10);
-
-            LinearLayout dailyLayout = new LinearLayout(getContext());
-            dailyLayout.setOrientation(LinearLayout.VERTICAL);
-            dailyLayout.setPadding(20, 20, 20, 20);
-
-            TextView dateHeader = new TextView(getContext());
-            if (date.equals(todayDate)) {
-                dateHeader.setText("Today");
-            } else {
-                dateHeader.setText(date);
-            }
-            dateHeader.setTextSize(18);
-            dateHeader.setTextColor(Color.BLACK);
-
-            int backgroundColor = ContextCompat.getColor(getContext(), R.color.light_blueish_gray);
-            dateHeader.setBackgroundColor(backgroundColor);
-
-            dateHeader.setPadding(0, 0, 0, 10);
-            dailyLayout.addView(dateHeader);
-
-            // Add transactions for this day
-            RecyclerView recyclerView = new RecyclerView(getContext());
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-            // Adapter for RecyclerView with transactions for that day
-            TransactionAdapter transactionAdapter = new TransactionAdapter(dailyTransactions);
-            recyclerView.setAdapter(transactionAdapter);
-
-
-            dailyLayout.addView(recyclerView);
-            cardView.addView(dailyLayout);
-            containerForTransactions.addView(cardView);
+            dateTransactionPairs.add(new Pair<>(date, transactionsByDate.get(date)));
         }
 
-        /*RecyclerView recyclerView = root.findViewById(R.id.recyclerViewToday);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions);
-        recyclerView.setAdapter(transactionAdapter);*/
+        // setup recyclerview
+        RecyclerView outerRecyclerView = root.findViewById(R.id.outerRecyclerView);
+        outerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        DateTransactionsAdapter dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
+        outerRecyclerView.setAdapter(dateTransactionsAdapter);
+
+
 
         return root;
     }
