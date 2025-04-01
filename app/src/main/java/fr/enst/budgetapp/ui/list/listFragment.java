@@ -44,6 +44,11 @@ public class listFragment extends Fragment {
     private FragmentListBinding binding;
     private TextView tvMonthYear;
     private Calendar calendar;
+    private String currentMonthYear;
+    private List<Pair<String, List<Transaction>>> dateTransactionPairs;
+
+    private RecyclerView outerRecyclerView;
+    private DateTransactionsAdapter dateTransactionsAdapter;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -54,65 +59,47 @@ public class listFragment extends Fragment {
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textList;
-        listViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         tvMonthYear = root.findViewById(R.id.tvMonthYearList);
         ImageButton btnPrevMonth = root.findViewById(R.id.btnPrevMonthList);
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonthList);
 
+
+        // sample data TODO: replace with actual data
+        List<Transaction> transactions = Arrays.asList(
+                new Transaction("Groceries", "45,00€", "2025-03-31"),
+                new Transaction("Groceries", "50,00€", "2025-03-03"),
+                new Transaction("Transport", "5,00€", "2025-03-31"),
+                new Transaction("Transport", "20,00€", "2025-03-15"),
+                new Transaction("Entertainment", "30,00€", "2025-03-10"),
+                new Transaction("Holidays", "1000,00€", "2025-04-10"),
+                new Transaction("Entertainment", "30,00€", "2025-04-15")
+        );
+
         // initialize calendar and update the month/year text
         calendar = Calendar.getInstance();
         updateMonthYear();
+        updateTransactions(transactions);
 
         btnPrevMonth.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, -1);
             updateMonthYear();
-            //updateChart();
+            updateTransactions(transactions);
         });
 
         btnNextMonth.setOnClickListener(v -> {
             calendar.add(Calendar.MONTH, 1);
             updateMonthYear();
-            //updateChart();
+            updateTransactions(transactions);
         });
 
-        // sample data TODO: replace with actual data
-        List<Transaction> transactions = Arrays.asList(
-                new Transaction("Groceries", "45,00€", "2023-03-31"),
-                new Transaction("Groceries", "50,00€", "2023-03-03"),
-                new Transaction("Transport", "5,00€", "2023-03-31"),
-                new Transaction("Transport", "20,00€", "2023-03-15"),
-                new Transaction("Entertainment", "30,00€", "2023-03-10")
-        );
-
-        // prepare data:
-        // 1) grouping transactions by date
-        HashMap<String, List<Transaction>> transactionsByDate = new HashMap<>();
-        for (Transaction transaction : transactions) {
-            String date = transaction.getTransactionDate();
-            if (!transactionsByDate.containsKey(date)) {
-                transactionsByDate.put(date, new ArrayList<>());
-            }
-            transactionsByDate.get(date).add(transaction);
-        }
-
-        // 2) sort dates by descending order
-        List<String> sortedDates = new ArrayList<>(transactionsByDate.keySet());
-        sortedDates.sort(Collections.reverseOrder());
-
-        // 3) create list for recycler view
-        List<Pair<String, List<Transaction>>> dateTransactionPairs = new ArrayList<>();
-        for (String date : sortedDates) {
-            dateTransactionPairs.add(new Pair<>(date, transactionsByDate.get(date)));
-        }
 
         // setup recyclerview
-        RecyclerView outerRecyclerView = root.findViewById(R.id.outerRecyclerView);
+        outerRecyclerView = root.findViewById(R.id.outerRecyclerView);
         outerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        DateTransactionsAdapter dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
-        outerRecyclerView.setAdapter(dateTransactionsAdapter);
 
+        dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
+        outerRecyclerView.setAdapter(dateTransactionsAdapter);
 
 
         return root;
@@ -121,6 +108,34 @@ public class listFragment extends Fragment {
     private void updateMonthYear() {
         String monthYear = android.text.format.DateFormat.format("MMMM yyyy", calendar).toString();
         tvMonthYear.setText(monthYear);
+        currentMonthYear = android.text.format.DateFormat.format("yyyy-MM", calendar).toString();
+
+    }
+
+    private void updateTransactions(List<Transaction> transactions) {
+        // prepare data:
+
+        // 1) only keep transactions displayed month
+        List<Transaction> currentTransactions = Transaction.filterYearAndMonth(transactions, currentMonthYear);
+
+        // 2) grouping transactions by date
+        HashMap<String, List<Transaction>> transactionsByDate = Transaction.groupTransactionsByDate(currentTransactions);
+
+        // 3) sort dates by descending order
+        List<String> sortedDates = new ArrayList<>(transactionsByDate.keySet());
+        sortedDates.sort(Collections.reverseOrder());
+
+        // 4) create list for recycler view
+        dateTransactionPairs = new ArrayList<>();
+        for (String date : sortedDates) {
+            dateTransactionPairs.add(new Pair<>(date, transactionsByDate.get(date)));
+        }
+
+        // 5) update view
+        dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
+        if (outerRecyclerView != null)
+            outerRecyclerView.setAdapter(dateTransactionsAdapter);
+
     }
 
     @Override

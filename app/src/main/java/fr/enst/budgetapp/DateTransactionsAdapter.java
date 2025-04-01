@@ -1,5 +1,8 @@
 package fr.enst.budgetapp;
 
+import static fr.enst.budgetapp.Transaction.sumMoneyAmount;
+
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -28,6 +31,7 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         return new DateViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull DateViewHolder holder, int position) {
         Pair<String, List<Transaction>> item = dataList.get(position);
@@ -37,6 +41,12 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         // Set date header
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.dateHeader.setText(date.equals(LocalDate.now().toString()) ? "Today" : date);
+        }
+
+        // set daily balance header
+        String dailyAmount = sumMoneyAmount(transactions);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.dailyBalanceHeader.setText(dailyAmount);
         }
 
         // Set up the inner RecyclerView for transactions
@@ -51,11 +61,13 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
 
     public static class DateViewHolder extends RecyclerView.ViewHolder {
         TextView dateHeader;
+        TextView dailyBalanceHeader;
         RecyclerView transactionRecyclerView;
 
         public DateViewHolder(View itemView) {
             super(itemView);
             dateHeader = itemView.findViewById(R.id.dateHeader);
+            dailyBalanceHeader = itemView.findViewById(R.id.dailyBalanceHeader);
             transactionRecyclerView = itemView.findViewById(R.id.transactionRecyclerView);
             transactionRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         }
