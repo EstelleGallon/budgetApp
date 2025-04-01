@@ -87,6 +87,7 @@ public class overviewFragment extends Fragment {
         tvMonthYearSpendingsPerCategory= root.findViewById(R.id.tvMonthYear);
         barChart = root.findViewById(R.id.chartSpendingPerCategory);
         APIlib.getInstance().setActiveAnyChartView(barChart);
+
         ImageButton btnPrevMonth = root.findViewById(R.id.btnPrevMonth);
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonth);
 
