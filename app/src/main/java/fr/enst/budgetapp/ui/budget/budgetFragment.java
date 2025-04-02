@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -51,6 +53,10 @@ public class budgetFragment extends Fragment {
         binding = FragmentBudgetBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        ImageView btnAddSavingGoal = root.findViewById(R.id.btnAddSavingGoal);
+        btnAddSavingGoal.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_newSavingGoalFragment);
+        });
 
         // Sample data for saving goals TODO: use actual data
         List<SavingGoal> savingGoals = Arrays.asList(

@@ -21,11 +21,25 @@
         android:id="@+id/navigation_budget"
         android:name="fr.enst.budgetapp.ui.budget.budgetFragment"
         android:label="@string/title_budget"
-        tools:layout="@layout/fragment_budget" />
+        tools:layout="@layout/fragment_budget">
+
+        <action
+            android:id="@+id/action_budgetFragment_to_newSavingGoalFragment"
+            app:destination="@id/newSavingGoalFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="fr.enst.budgetapp.ui.calendar.calendarFragment"
         android:label="@string/title_calendar"
         tools:layout="@layout/fragment_calendar" />
+
+    <fragment
+        android:id="@+id/newSavingGoalFragment"
+        android:name="fr.enst.budgetapp.ui.budget.NewSavingGoalFragment"
+        android:label="new Saving Goal">
+        <action
+            android:id="@+id/action_newSavingGoalFragment_to_budgetFragment"
+            app:destination="@id/navigation_budget" />
+    </fragment>
 </navigation>

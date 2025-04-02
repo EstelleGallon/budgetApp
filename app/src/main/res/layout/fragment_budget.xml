@@ -65,6 +65,7 @@
 
                     <!-- add goal button-->
                     <ImageView
+                        android:id="@+id/btnAddSavingGoal"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:layout_gravity="end"
