@@ -4,4 +4,16 @@
     <string name="title_list">List</string>
     <string name="title_budget">Budget</string>
     <string name="title_calendar">Calendar</string>
+    <string-array name="category_array">
+        <item>Groceries</item>
+        <item>Entertainment</item>
+        <item>Transportation</item>
+        <item>Healthcare</item>
+        <item>Utilities</item>
+    </string-array>
+    <string-array name="repeat_array">
+        <item>Never repeat</item>
+        <item>Repeat weekly</item>
+        <item>Repeat monthly</item>
+    </string-array>
 </resources>

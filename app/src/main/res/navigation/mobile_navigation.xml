@@ -15,7 +15,12 @@
         android:id="@+id/navigation_list"
         android:name="fr.enst.budgetapp.ui.list.listFragment"
         android:label="@string/title_list"
-        tools:layout="@layout/fragment_list" />
+        tools:layout="@layout/fragment_list">
+
+        <action
+            android:id="@+id/action_listFragment_to_newTransactionFragment"
+            app:destination="@id/newTransactionFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_budget"
@@ -52,5 +57,14 @@
         android:name="fr.enst.budgetapp.ui.budget.EditSavingGoalFragment"
         android:label="Edit Saving Goal"
         tools:layout="@layout/fragment_edit_saving_goal" />
+
+    <fragment
+        android:id="@+id/newTransactionFragment"
+        android:name="fr.enst.budgetapp.ui.list.NewTransactionFragment"
+        android:label="new transaction">
+        <action
+            android:id="@+id/action_newTransactionFragment_to_listFragment"
+            app:destination="@id/navigation_budget" />
+    </fragment>
 
 </navigation>

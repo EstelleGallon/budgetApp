@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
@@ -102,6 +104,12 @@ public class listFragment extends Fragment {
 
         dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
         outerRecyclerView.setAdapter(dateTransactionsAdapter);
+
+        // add transaction button
+        ImageView btnAddTransaction = root.findViewById(R.id.btnAddTransaction);
+        btnAddTransaction.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_listFragment_to_newTransactionFragment);
+        });
 
 
         return root;

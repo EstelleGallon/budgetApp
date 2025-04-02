@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="100dp"
+>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="New Transaction"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Amount -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_euro"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/etTransactionAmount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Amount (€)"
+                android:inputType="numberDecimal"/>
+        </LinearLayout>
+
+        <!-- Type of transaction -->
+        <RadioGroup
+            android:id="@+id/rgCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp"
+            android:gravity="center">
+
+            <RadioButton
+                android:id="@+id/rbSpending"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spending"
+                android:layout_marginEnd="16dp" />
+
+            <RadioButton
+                android:id="@+id/rbIncome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Income"
+                android:layout_marginEnd="16dp" />
+
+            <RadioButton
+                android:id="@+id/rbSavings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Savings" />
+        </RadioGroup>
+
+        <!-- Category -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_category"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/category_array"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- Date -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_calendar"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/etTransactionDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date (YYYY-MM-DD)"
+                android:inputType="date" />
+        </LinearLayout>
+
+        <!-- Repeat -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_repeat"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:entries="@array/repeat_array"
+                android:layout_gravity="center"/>
+
+        </LinearLayout>
+
+        <!-- Notifications -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_notifications"
+                android:layout_marginEnd="8dp"
+                android:layout_gravity="center"/>
+
+            <RadioGroup
+                android:id="@+id/rgNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="start">
+
+                <RadioButton
+                    android:id="@+id/rbNotificationsOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Off"
+                    android:layout_marginEnd="16dp" />
+
+                <RadioButton
+                    android:id="@+id/rbNotificationsOn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="On" />
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+        <!-- Notes -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_circle_unfilled"
+                android:layout_marginEnd="8dp" />
+
+            <EditText
+                android:id="@+id/etTransactionNotes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Notes"
+                android:inputType="textMultiLine" />
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnBackToList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/btnSaveTransaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
