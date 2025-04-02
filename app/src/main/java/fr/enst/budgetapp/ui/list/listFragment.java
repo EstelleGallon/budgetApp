@@ -42,7 +42,8 @@ import fr.enst.budgetapp.databinding.FragmentListBinding;
 public class listFragment extends Fragment {
 
     private FragmentListBinding binding;
-    private TextView tvMonthYear;
+    //private TextView tvMonthYear;
+    private TextView tvDisplayedMonth;
     private Calendar calendar;
     private String currentMonthYear;
     private List<Pair<String, List<Transaction>>> dateTransactionPairs;
@@ -60,7 +61,8 @@ public class listFragment extends Fragment {
         View root = binding.getRoot();
 
 
-        tvMonthYear = root.findViewById(R.id.tvMonthYearList);
+        //tvMonthYear = root.findViewById(R.id.tvMonthYearList);
+        tvDisplayedMonth = root.findViewById(R.id.tvDisplayedMonth);
         ImageButton btnPrevMonth = root.findViewById(R.id.btnPrevMonthList);
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonthList);
 
@@ -107,7 +109,8 @@ public class listFragment extends Fragment {
 
     private void updateMonthYear() {
         String monthYear = android.text.format.DateFormat.format("MMMM yyyy", calendar).toString();
-        tvMonthYear.setText(monthYear);
+        //tvMonthYear.setText(monthYear);
+        tvDisplayedMonth.setText(monthYear);
         currentMonthYear = android.text.format.DateFormat.format("yyyy-MM", calendar).toString();
 
     }

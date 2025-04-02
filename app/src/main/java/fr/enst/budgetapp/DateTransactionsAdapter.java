@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -39,8 +40,15 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         List<Transaction> transactions = item.second;
 
         // Set date header
+        String formattedDate;
+        try {
+            formattedDate = Transaction.getWeekday(date);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            holder.dateHeader.setText(date.equals(LocalDate.now().toString()) ? "Today" : date);
+            holder.dateHeader.setText(formattedDate);
         }
 
         // set daily balance header
@@ -50,7 +58,7 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         }
 
         // Set up the inner RecyclerView for transactions
-        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions);
+        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions, false);
         holder.transactionRecyclerView.setAdapter(transactionAdapter);
     }
 

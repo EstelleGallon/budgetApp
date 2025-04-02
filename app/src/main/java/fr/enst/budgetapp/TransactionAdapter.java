@@ -12,9 +12,16 @@ import java.util.List;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private final List<Transaction> transactions;
+    private boolean showDate;
 
     public TransactionAdapter(List<Transaction> transactions) {
         this.transactions = transactions;
+        this.showDate = true;
+    }
+
+    public TransactionAdapter(List<Transaction> transactions, boolean showDate) {
+        this.transactions = transactions;
+        this.showDate = showDate;
     }
 
     @NonNull
@@ -30,7 +37,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         Transaction transaction = transactions.get(position);
         holder.categoryNameTextView.setText(transaction.getCategoryName());
         holder.moneyAmountTextView.setText(transaction.getMoneyAmount());
-        holder.transactionDateTextView.setText(transaction.getTransactionDate());
+        if (showDate) {
+            holder.transactionDateTextView.setVisibility(View.VISIBLE);
+            holder.transactionDateTextView.setText(transaction.getTransactionDate());
+        } else
+            holder.transactionDateTextView.setVisibility(View.GONE);
     }
 
     @Override

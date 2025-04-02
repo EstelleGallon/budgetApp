@@ -9,69 +9,49 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingBottom="100dp">
 
             <!-- income/spendings header -->
             <include
-                layout="@layout/item_income_spendings"
-                android:id="@+id/incomeSpendingsHeader" />
+                android:id="@+id/incomeSpendingsHeader"
+                layout="@layout/item_income_spendings" />
 
-            <!-- Container for month/year selection -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingTop="15dp"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp">
-                <ImageButton
-                    android:id="@+id/btnPrevMonthList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_back_arrow"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Go back"/>
-
-                <TextView
-                    android:id="@+id/tvMonthYearList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="January 2023"
-                    android:textSize="16sp"
-                    android:layout_marginHorizontal="8dp"
-                    android:layout_weight="1"
-                    android:gravity="center"/>
-                <ImageButton
-                    android:id="@+id/btnNextMonthList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_forward_arrow"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Go forward"/>
-
-
-            </LinearLayout>
-
-            <!-- Outer RecyclerView for listing all days with transactions -->
+            <!-- all transactions of the month-->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/outerRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-
-
         </LinearLayout>
-
     </ScrollView>
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foregroundGravity="bottom"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/addTransactionButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="@android:color/white"
+            android:contentDescription="Add transaction"
+            android:src="@drawable/ic_add"
+            android:layout_gravity="end"/>
+
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

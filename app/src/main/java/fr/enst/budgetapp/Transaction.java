@@ -2,8 +2,12 @@ package fr.enst.budgetapp;
 
 import static java.lang.Double.parseDouble;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +50,9 @@ public class Transaction {
 
     public static HashMap<String, List<Transaction>> groupTransactionsByDate(List<Transaction> transactions) {
         HashMap<String, List<Transaction>> transactionsByDate = new HashMap<>();
-        for (Transaction transaction : transactions) {
+
+        for (Transaction transaction : transactions)
+        {
             String date = transaction.getTransactionDate();
             if (!transactionsByDate.containsKey(date)) {
                 transactionsByDate.put(date, new ArrayList<>());
@@ -69,12 +75,27 @@ public class Transaction {
         List<Transaction> filteredTransactions = new ArrayList<>();
         for (Transaction transaction : allTransactions) {
 
-            System.out.println("ym: " + transaction.getYearAndMonth());
             if (Objects.equals(transaction.getYearAndMonth(), yearAndMonth)) {
                 filteredTransactions.add(transaction);
-                System.out.println("ym: " + transaction.getMoneyAmount());
             }
         }
         return filteredTransactions;
+    }
+
+    public static String getWeekday(String initialDate) throws ParseException {
+        SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = originalFormat.parse(initialDate);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        //int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+        String weekdayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, java.util.Locale.getDefault());
+
+        // Get the day of the month
+        int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
+        System.out.println(weekdayName + ", " + dayOfMonth);
+
+        return weekdayName + ", " + dayOfMonth;
     }
 }
