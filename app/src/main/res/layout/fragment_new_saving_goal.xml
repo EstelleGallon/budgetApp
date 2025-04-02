@@ -31,8 +31,7 @@
             android:id="@+id/etGoalName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Name of Goal"
-            android:layout_marginBottom="16dp" />
+            android:hint="Name of Goal" />
     </LinearLayout>
     <!-- Amount -->
     <LinearLayout
@@ -42,9 +41,9 @@
         android:layout_marginBottom="16dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_euro"
             android:layout_marginEnd="8dp" />
 
         <EditText
@@ -63,8 +62,8 @@
         android:layout_marginBottom="16dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:src="@drawable/ic_calendar"
             android:layout_marginEnd="8dp" />
 
@@ -84,9 +83,9 @@
         android:layout_marginBottom="16dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_add"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_notes"
             android:layout_marginEnd="8dp" />
 
         <EditText
