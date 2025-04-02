@@ -60,9 +60,9 @@ public class budgetFragment extends Fragment {
 
         // Sample data for saving goals TODO: use actual data
         List<SavingGoal> savingGoals = Arrays.asList(
-                new SavingGoal("Vacation Fund", 50, "2023-12-31", 1000),
-                new SavingGoal("Emergency Fund", 30, "2024-06-30", 5000),
-                new SavingGoal("New Car", 70, "2025-01-01", 20000)
+                new SavingGoal("1","Vacation Fund", 50, "2023-12-31", 1000),
+                new SavingGoal("2", "Emergency Fund", 30, "2024-06-30", 5000),
+                new SavingGoal("3", "New Car", 70, "2025-01-01", 20000)
         );
 
         // Set up RecyclerView

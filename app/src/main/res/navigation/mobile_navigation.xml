@@ -26,6 +26,10 @@
         <action
             android:id="@+id/action_budgetFragment_to_newSavingGoalFragment"
             app:destination="@id/newSavingGoalFragment"/>
+
+        <action
+            android:id="@+id/action_budgetFragment_to_editSavingGoalFragment"
+            app:destination="@id/editSavingGoalFragment" />
     </fragment>
 
     <fragment
@@ -42,4 +46,11 @@
             android:id="@+id/action_newSavingGoalFragment_to_budgetFragment"
             app:destination="@id/navigation_budget" />
     </fragment>
+
+    <fragment
+        android:id="@+id/editSavingGoalFragment"
+        android:name="fr.enst.budgetapp.ui.budget.EditSavingGoalFragment"
+        android:label="Edit Saving Goal"
+        tools:layout="@layout/fragment_edit_saving_goal" />
+
 </navigation>
