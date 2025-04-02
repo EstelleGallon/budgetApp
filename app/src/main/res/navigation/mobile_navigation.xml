@@ -61,10 +61,23 @@
     <fragment
         android:id="@+id/newTransactionFragment"
         android:name="fr.enst.budgetapp.ui.list.NewTransactionFragment"
-        android:label="new transaction">
+        android:label="New transaction">
         <action
             android:id="@+id/action_newTransactionFragment_to_listFragment"
-            app:destination="@id/navigation_budget" />
+            app:destination="@id/navigation_list" />
+
+        <action
+            android:id="@+id/action_newTransactionFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/categoriesFragment"
+        android:name="fr.enst.budgetapp.ui.list.CategoryFragment"
+        android:label="Categories">
+        <action
+            android:id="@+id/action_categoriesFragment_to_newTransactionFragment"
+            app:destination="@id/newTransactionFragment" />
     </fragment>
 
 </navigation>

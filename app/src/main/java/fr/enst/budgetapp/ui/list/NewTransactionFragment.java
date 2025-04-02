@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,8 +43,19 @@ public class NewTransactionFragment extends Fragment {
         RadioButton rbNotificationsOff = root.findViewById(R.id.rbNotificationsOff);
         RadioButton rbNotificationsOn = root.findViewById(R.id.rbNotificationsOn);
 
+        // Handle navigation to Category Page
+        ImageView btnChooseCategory = root.findViewById(R.id.ivChooseCategory);
+        btnChooseCategory.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_categoriesFragment);
+        });
+
+        TextView tvChooseCategory = root.findViewById(R.id.tvChooseCategory);
+        tvChooseCategory.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_categoriesFragment);
+        });
+
         // Handle Back button click
-        btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
+        btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_listFragment));
 
         // Handle Save button click
         btnSave.setOnClickListener(v -> {
@@ -56,12 +69,21 @@ public class NewTransactionFragment extends Fragment {
                 return;
             }
 
-            // TODO: Save the new goal
+            // TODO: Save the new transaction
 
             // Navigate back to the List page
             Navigation.findNavController(v).navigateUp();
         });
 
+        // retrieve chosen category name from bundle
+        if (getArguments() != null) {
+            String categoryName = getArguments().getString("CATEGORY_NAME");
+            if (categoryName != null)
+                tvChooseCategory.setText(categoryName);
+
+
+        }
         return root;
     }
+
 }
