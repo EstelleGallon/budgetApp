@@ -1,6 +1,7 @@
 package fr.enst.budgetapp;
 
 import android.graphics.PorterDuff;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,12 @@ import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
-    private List<Category> categories;
-    private View.OnClickListener itemClickListener;
+    private final List<Category> categories;
+    private final View.OnClickListener nameClickListener;
 
-    public CategoryAdapter(List<Category> categories, View.OnClickListener itemClickListener) {
+    public CategoryAdapter(List<Category> categories, View.OnClickListener nameClickListener) {
         this.categories = categories;
-        this.itemClickListener = itemClickListener;
+        this.nameClickListener = nameClickListener;
     }
 
     @Override
@@ -37,8 +38,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
         // click listener on category name
         holder.categoryName.setOnClickListener(v -> {
-            if (itemClickListener != null) {
-                itemClickListener.onClick(v);
+            if (nameClickListener != null) {
+                nameClickListener.onClick(v);
             }
         });
 

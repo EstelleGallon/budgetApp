@@ -74,10 +74,25 @@
     <fragment
         android:id="@+id/categoriesFragment"
         android:name="fr.enst.budgetapp.ui.list.CategoryFragment"
-        android:label="Categories">
+        android:label="Select a category">
+
         <action
             android:id="@+id/action_categoriesFragment_to_newTransactionFragment"
             app:destination="@id/newTransactionFragment" />
+
+        <action
+            android:id="@+id/action_categoriesFragment_to_EditCategoryFragment"
+            app:destination="@id/editCategoriesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editCategoriesFragment"
+        android:name="fr.enst.budgetapp.ui.list.EditCategoryFragment"
+        android:label="Edit categories">
+
+        <action
+            android:id="@+id/action_EditCategoryFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment"/>
     </fragment>
 
 </navigation>

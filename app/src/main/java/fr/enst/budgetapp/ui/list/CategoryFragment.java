@@ -22,15 +22,12 @@ import fr.enst.budgetapp.R;
 
 public class CategoryFragment  extends Fragment {
 
-    private RecyclerView recyclerView;
-    private CategoryAdapter adapter;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_categories, container, false);
 
-        recyclerView = rootView.findViewById(R.id.recyclerViewCategories);
+        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerViewCategories);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Create a list of categories
@@ -41,12 +38,9 @@ public class CategoryFragment  extends Fragment {
         categoryList.add(new Category("Healthcare", Color.parseColor("#F9FA97"), R.drawable.ic_circle_filled));
         categoryList.add(new Category("Utilities", Color.parseColor("#CCAAFA"), R.drawable.ic_circle_filled));
 
-
-        // Set the adapter
-        adapter = new CategoryAdapter(categoryList, new View.OnClickListener() {
+        View.OnClickListener nameClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 String categoryName = ((TextView) v).getText().toString();
                 System.out.println(categoryName);
 
@@ -57,7 +51,20 @@ public class CategoryFragment  extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newTransactionFragment, bundle);
                 // TODO: store chosen category
             }
-        });
+        };
+
+        ImageView editCategory = rootView.findViewById(R.id.ivEditCategory);
+        View.OnClickListener editClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_EditCategoryFragment);
+            }
+        };
+        editCategory.setOnClickListener(editClickListener);
+
+
+        // Set the adapter
+        CategoryAdapter adapter = new CategoryAdapter(categoryList, nameClickListener);
         recyclerView.setAdapter(adapter);
 
         return rootView;
