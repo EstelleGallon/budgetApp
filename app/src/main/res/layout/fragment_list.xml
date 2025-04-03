@@ -43,7 +43,6 @@
         android:layout_marginRight="15dp">
 
         <ImageView
-            android:id="@+id/addTransactionButton"
             android:id="@+id/btnAddTransaction"
             android:layout_width="48dp"
             android:layout_height="48dp"
