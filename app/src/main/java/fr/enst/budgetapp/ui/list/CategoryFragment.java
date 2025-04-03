@@ -9,18 +9,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import fr.enst.budgetapp.Category;
 import fr.enst.budgetapp.CategoryAdapter;
 import fr.enst.budgetapp.R;
 
 public class CategoryFragment  extends Fragment {
+    private String previousFragment = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,8 +52,16 @@ public class CategoryFragment  extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putString("CATEGORY_NAME", categoryName);
 
-                Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newTransactionFragment, bundle);
-                // TODO: store chosen category
+                // retrieve previous fragment name
+                if (getArguments() != null) {
+                    previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                }
+                if (Objects.equals(previousFragment, "new")) {
+                    Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newTransactionFragment, bundle);
+                } else if (Objects.equals(previousFragment, "edit")) {
+                    Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_editTransactionFragment, bundle);
+                }
+                System.out.println("previous fragment: " + previousFragment);
             }
         };
 
@@ -57,7 +69,12 @@ public class CategoryFragment  extends Fragment {
         View.OnClickListener editClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_EditCategoryFragment);
+                if (getArguments() != null) {
+                    previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                }
+                Bundle bundleEdit = new Bundle();
+                bundleEdit.putString("PREVIOUS_FRAGMENT", previousFragment);
+                Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_EditCategoryFragment, bundleEdit);
             }
         };
         editCategory.setOnClickListener(editClickListener);

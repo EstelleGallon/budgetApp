@@ -3,9 +3,11 @@ package fr.enst.budgetapp;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -40,8 +42,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         if (showDate) {
             holder.transactionDateTextView.setVisibility(View.VISIBLE);
             holder.transactionDateTextView.setText(transaction.getTransactionDate());
-        } else
+        } else {
             holder.transactionDateTextView.setVisibility(View.GONE);
+            View.OnClickListener editTransactionClickListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Navigation.findNavController(v).navigate(R.id.action_listFragment_to_editTransactionFragment);
+                }
+            };
+            holder.transactionArea.setOnClickListener(editTransactionClickListener);
+        }
     }
 
     @Override
@@ -53,12 +63,14 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         TextView categoryNameTextView;
         TextView moneyAmountTextView;
         TextView transactionDateTextView;
+        LinearLayout transactionArea;
 
         public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
             categoryNameTextView = itemView.findViewById(R.id.tvCategoryName);
             moneyAmountTextView = itemView.findViewById(R.id.tvMoneyAmount);
             transactionDateTextView = itemView.findViewById(R.id.tvTransactionDate);
+            transactionArea = itemView.findViewById(R.id.llTransaction);
         }
     }
 }

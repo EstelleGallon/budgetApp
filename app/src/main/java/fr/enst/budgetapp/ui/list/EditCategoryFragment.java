@@ -82,7 +82,16 @@ public class EditCategoryFragment extends Fragment {
             public void onClick(View v) {
                 // TODO:
                 //  - 6) save all the changes
-                Navigation.findNavController(v).navigate(R.id.action_EditCategoryFragment_to_categoriesFragment);
+
+                // retrieve previous fragment name
+                String previousFragment = "";
+                if (getArguments() != null) {
+                    previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putString("PREVIOUS_FRAGMENT", previousFragment);
+                Navigation.findNavController(v).navigate(R.id.action_EditCategoryFragment_to_categoriesFragment, bundle);
 
             }
         };

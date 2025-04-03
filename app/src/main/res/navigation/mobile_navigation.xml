@@ -20,6 +20,11 @@
         <action
             android:id="@+id/action_listFragment_to_newTransactionFragment"
             app:destination="@id/newTransactionFragment"/>
+
+        <action
+            android:id="@+id/action_listFragment_to_editTransactionFragment"
+            app:destination="@+id/editTransactionFragment"/>
+
     </fragment>
 
     <fragment
@@ -61,7 +66,7 @@
     <fragment
         android:id="@+id/newTransactionFragment"
         android:name="fr.enst.budgetapp.ui.list.NewTransactionFragment"
-        android:label="New transaction">
+        android:label="New Transaction">
         <action
             android:id="@+id/action_newTransactionFragment_to_listFragment"
             app:destination="@id/navigation_list" />
@@ -69,6 +74,20 @@
         <action
             android:id="@+id/action_newTransactionFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editTransactionFragment"
+        android:name="fr.enst.budgetapp.ui.list.EditTransactionFragment"
+        android:label="Edit Transaction">
+
+        <action
+            android:id="@+id/action_editTransactionFragment_to_listFragment"
+            app:destination="@id/navigation_list" />
+
+        <action
+            android:id="@+id/action_editTransactionFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment"/>
     </fragment>
 
     <fragment
@@ -83,6 +102,10 @@
         <action
             android:id="@+id/action_categoriesFragment_to_EditCategoryFragment"
             app:destination="@id/editCategoriesFragment" />
+
+        <action
+            android:id="@+id/action_categoriesFragment_to_editTransactionFragment"
+            app:destination="@id/editTransactionFragment"/>
     </fragment>
 
     <fragment
@@ -93,6 +116,7 @@
         <action
             android:id="@+id/action_EditCategoryFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment"/>
+
     </fragment>
 
 </navigation>

@@ -15,6 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ComputableLiveData;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.SavedStateHandle;
+import androidx.navigation.NavBackStackEntry;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import fr.enst.budgetapp.R;
@@ -51,7 +59,11 @@ public class NewTransactionFragment extends Fragment {
 
         TextView tvChooseCategory = root.findViewById(R.id.tvChooseCategory);
         tvChooseCategory.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_categoriesFragment);
+
+            Bundle bundleFrag = new Bundle();
+            bundleFrag.putString("PREVIOUS_FRAGMENT", "new");
+
+            Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_categoriesFragment, bundleFrag);
         });
 
         // Handle Back button click
@@ -80,9 +92,9 @@ public class NewTransactionFragment extends Fragment {
             String categoryName = getArguments().getString("CATEGORY_NAME");
             if (categoryName != null)
                 tvChooseCategory.setText(categoryName);
-
-
         }
+
+
         return root;
     }
 
