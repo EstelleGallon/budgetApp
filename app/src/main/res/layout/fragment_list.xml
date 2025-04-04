@@ -43,10 +43,6 @@
         android:layout_marginRight="15dp">
 
         <ImageView
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
             android:id="@+id/btnAddTransaction"
             android:layout_width="48dp"
             android:layout_height="48dp"
