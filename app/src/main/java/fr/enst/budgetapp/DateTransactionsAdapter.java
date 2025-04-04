@@ -1,6 +1,7 @@
 package fr.enst.budgetapp;
 
 import static java.lang.Double.parseDouble;
+import static fr.enst.budgetapp.Transaction.sumAllMoneyAmount;
 import static fr.enst.budgetapp.Transaction.sumMoneyAmount;
 
 import android.annotation.SuppressLint;
@@ -53,7 +54,7 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         }
 
         // set daily balance header
-        String dailyAmount = sumMoneyAmount(transactions);
+        String dailyAmount = sumAllMoneyAmount(transactions);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
             if(!dailyAmount.startsWith("-")){dailyAmount = "+" + dailyAmount;}

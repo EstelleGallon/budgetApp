@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 public class Transaction {
@@ -93,12 +94,38 @@ public class Transaction {
     }
 
     public static String sumMoneyAmount(List<Transaction> transactions) {
+        Date today = new Date();
         double amount = 0;
+
         for (Transaction transaction : transactions) {
 
+            Date txDate = null;
+            try {
+                txDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(transaction.getTransactionDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             if (transaction.getTransactionType().equalsIgnoreCase("Income")) {
                 amount += transaction.getMoneyAmountDouble();
-            } else {
+                //to not subtract future bills
+            } else if (!txDate.after(today)) {
+                amount -= transaction.getMoneyAmountDouble();
+            }
+
+        }
+        //return Double.toString(amount).replace(".", ",") + "€";
+        return String.format(java.util.Locale.FRANCE, "%.2f€", amount).replace(".", ",");
+
+    }
+
+    //Used to sum everything even for future dates
+    public static String sumAllMoneyAmount(List<Transaction> transactions) {
+        double amount = 0;
+        for (Transaction transaction : transactions) {
+            if (transaction.getTransactionType().equalsIgnoreCase("Income")) {
+                amount += transaction.getMoneyAmountDouble();
+                //to not subtract future bills
+            } else{
                 amount -= transaction.getMoneyAmountDouble();
             }
 

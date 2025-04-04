@@ -1,6 +1,7 @@
 package fr.enst.budgetapp.ui.overview;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,11 +28,16 @@ import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.scales.Linear;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
 import fr.enst.budgetapp.Balances;
@@ -86,8 +92,7 @@ public class overviewFragment extends Fragment {
         */
 
         // Set up the ViewPager2 adapter
-        AccountBalanceAdapter adapter = new AccountBalanceAdapter(balances);
-        viewPager.setAdapter(adapter);
+
 
         /*
         // Initialize the RecyclerView for last transactions
@@ -118,6 +123,51 @@ public class overviewFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         TransactionAdapter transactionAdapter = new TransactionAdapter(recent);
         recyclerView.setAdapter(transactionAdapter);
+
+
+        //UPCOMING BILLS
+
+        List<Transaction> upcomingBills = new ArrayList<>();
+
+        double upcomingTotal = balancesObj.checking;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar today = Calendar.getInstance();
+        Calendar nextWeek = Calendar.getInstance();
+        nextWeek.add(Calendar.DAY_OF_YEAR, 7);
+
+        for (Transaction tx : transactions) {
+            if ("Spending".equalsIgnoreCase(tx.getTransactionType())) {
+                try {
+                    Date txDate = sdf.parse(tx.getTransactionDate());
+                    Calendar txCal = Calendar.getInstance();
+                    txCal.setTime(txDate);
+
+                    if (!txCal.before(today) && txCal.before(nextWeek)) {
+                        upcomingBills.add(tx);
+                        upcomingTotal -= tx.getMoneyAmountDouble();
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if (upcomingBills == null) upcomingBills = new ArrayList<>();
+        Log.d("UPCOMING", String.valueOf(upcomingTotal));
+
+
+
+        RecyclerView upcomingRecycler = root.findViewById(R.id.recyclerViewUpcomingBills);
+        upcomingRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        TransactionAdapter upcomingAdapter = new TransactionAdapter(upcomingBills);
+        upcomingRecycler.setAdapter(upcomingAdapter);
+
+
+        AccountBalanceAdapter adapter = new AccountBalanceAdapter(balances, upcomingTotal);
+        viewPager.setAdapter(adapter);
+
 
         // Initialize the bar chart
         tvMonthYearSpendingsPerCategory= root.findViewById(R.id.tvMonthYear);

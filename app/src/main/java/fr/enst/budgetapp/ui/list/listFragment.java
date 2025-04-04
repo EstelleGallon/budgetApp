@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +37,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
 import fr.enst.budgetapp.DateTransactionsAdapter;
@@ -162,12 +164,22 @@ public class listFragment extends Fragment {
         double incomeTotal = 0;
         double spendingTotal = 0;
 
+        Date today = new Date();
+
         for (Transaction tx : currentTransactions) {
             double amount = tx.getMoneyAmountDouble();
 
-            if (tx.getTransactionType().equalsIgnoreCase("Income")) {
+            Date txDate = null;
+            try {
+                txDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(tx.getTransactionDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            if (tx.getTransactionType().equalsIgnoreCase("Income") && !txDate.after(today) ) {
                 incomeTotal += amount;
-            } else if (tx.getTransactionType().equalsIgnoreCase("Spending") || tx.getTransactionType().equalsIgnoreCase("Savings")) {
+            } else if ((tx.getTransactionType().equalsIgnoreCase("Spending") || tx.getTransactionType().equalsIgnoreCase("Savings")) && !txDate.after(today)) {
                 spendingTotal += amount;
             }
         }

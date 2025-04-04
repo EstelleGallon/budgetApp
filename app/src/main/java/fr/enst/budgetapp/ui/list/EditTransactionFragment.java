@@ -186,7 +186,8 @@ public class EditTransactionFragment extends Fragment {
             String category = tvChooseCategory.getText().toString();
 
 
-            amount = amount.replace(",", ".");
+            amount = amount.replace("€", "").replace(",", ".").trim();
+
             try {
                 double parsed = Double.parseDouble(amount);
                 amount = String.format(Locale.getDefault(), "%.2f", parsed);

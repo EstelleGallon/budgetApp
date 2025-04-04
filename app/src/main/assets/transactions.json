@@ -54,7 +54,7 @@
     "transactionType": "Savings",
     "categoryName": "Holidays",
     "moneyAmount": "1100,00€",
-    "transactionDate": "2025-04-10",
+    "transactionDate": "2025-04-02",
     "repeatFrequency": "Never",
     "notification": false,
     "notes": "Christmas Holiday Savings"
@@ -64,7 +64,7 @@
     "transactionType": "Spending",
     "categoryName": "Entertainment",
     "moneyAmount": "30,00€",
-    "transactionDate": "2025-04-15",
+    "transactionDate": "2025-04-11",
     "repeatFrequency": "Never",
     "notification": false,
     "notes": "Went out with friends"
@@ -75,7 +75,7 @@
     "transactionType": "Income",
     "categoryName": "Social Security Benefits",
     "moneyAmount": "400,00€",
-    "transactionDate": "2025-04-22",
+    "transactionDate": "2025-04-04",
     "repeatFrequency": "Never",
     "notification": false,
     "notes": ""
