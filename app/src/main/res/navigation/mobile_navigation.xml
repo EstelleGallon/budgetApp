@@ -43,6 +43,10 @@
         <action
             android:id="@+id/action_budgetFragment_to_newExpenseLimitFragment"
             app:destination="@id/newExpenseLimitFragment" />
+        <action
+            android:id="@+id/action_budgetFragment_to_editExpenseLimitFragment"
+            app:destination="@id/editExpenseLimitFragment" />
+
     </fragment>
 
     <fragment

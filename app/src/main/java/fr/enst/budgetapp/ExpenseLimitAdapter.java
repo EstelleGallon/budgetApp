@@ -2,13 +2,16 @@ package fr.enst.budgetapp;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -57,6 +60,17 @@ public class ExpenseLimitAdapter extends RecyclerView.Adapter<ExpenseLimitAdapte
 
             holder.llMonthsContainer.addView(monthView);
         }
+
+        // --- Handle navigation to edit expense limit ---
+        holder.btnEditExpenseLimit.setOnClickListener(v -> {
+            // Pass the expense limit data to the EditExpenseLimitFragment
+            Bundle bundle = new Bundle();
+            bundle.putString("CATEGORY_NAME", expenseLimit.getCategoryName());
+            bundle.putBooleanArray("EXCEEDED_MONTHS", expenseLimit.getExceededMonths());
+
+            // Navigate to EditExpenseLimitFragment
+            Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_editExpenseLimitFragment, bundle);
+        });
     }
 
     @Override
@@ -67,11 +81,13 @@ public class ExpenseLimitAdapter extends RecyclerView.Adapter<ExpenseLimitAdapte
     public static class ExpenseLimitViewHolder extends RecyclerView.ViewHolder {
         TextView tvCategoryName;
         LinearLayout llMonthsContainer;
+        ImageView btnEditExpenseLimit;
 
         public ExpenseLimitViewHolder(@NonNull View itemView) {
             super(itemView);
             tvCategoryName = itemView.findViewById(R.id.tvCategoryName);
             llMonthsContainer = itemView.findViewById(R.id.llMonthsContainer);
+            btnEditExpenseLimit = itemView.findViewById(R.id.btnEditExpenseLimit);
         }
     }
 }

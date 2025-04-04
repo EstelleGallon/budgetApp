@@ -16,4 +16,8 @@ public class ExpenseLimit {
     public boolean isExceeded(int monthIndex) {
         return exceededMonths[monthIndex];
     }
+
+    public boolean[] getExceededMonths() {
+        return exceededMonths;
+    }
 }

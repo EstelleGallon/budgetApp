@@ -55,6 +55,7 @@ public class budgetFragment extends Fragment {
         binding = FragmentBudgetBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+
         // ---- Navigation to New Saving Goal ----
         ImageView btnAddSavingGoal = root.findViewById(R.id.btnAddSavingGoal);
         btnAddSavingGoal.setOnClickListener(v -> {
@@ -66,6 +67,7 @@ public class budgetFragment extends Fragment {
         btnAddExpenseLimit.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_newExpenseLimitFragment);
         });
+
 
 
         // Sample data for saving goals TODO: use actual data
