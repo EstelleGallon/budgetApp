@@ -25,6 +25,7 @@ import fr.enst.budgetapp.R;
 
 public class CategoryFragment  extends Fragment {
     private String previousFragment = "";
+    private String previousMenu = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,10 +56,12 @@ public class CategoryFragment  extends Fragment {
                 // retrieve previous fragment name
                 if (getArguments() != null) {
                     previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                    previousMenu = getArguments().getString("PREVIOUS_MENU");
                 }
-                if (Objects.equals(previousFragment, "new")) {
+                if (Objects.equals(previousFragment, "newTransaction")) {
+                    bundle.putString("PREVIOUS_MENU", previousMenu);
                     Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newTransactionFragment, bundle);
-                } else if (Objects.equals(previousFragment, "edit")) {
+                } else if (Objects.equals(previousFragment, "editTransaction")) {
                     Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_editTransactionFragment, bundle);
                 } else if (Objects.equals(previousFragment, "newExpenseLimit")){
                     Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newExpenseLimitFragment, bundle);
@@ -75,9 +78,11 @@ public class CategoryFragment  extends Fragment {
             public void onClick(View v) {
                 if (getArguments() != null) {
                     previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                    previousMenu = getArguments().getString("PREVIOUS_MENU");
                 }
                 Bundle bundleEdit = new Bundle();
                 bundleEdit.putString("PREVIOUS_FRAGMENT", previousFragment);
+                bundleEdit.putString("PREVIOUS_MENU", previousMenu);
                 Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_EditCategoryFragment, bundleEdit);
             }
         };

@@ -85,12 +85,15 @@ public class EditCategoryFragment extends Fragment {
 
                 // retrieve previous fragment name
                 String previousFragment = "";
+                String previousMenu = "";
                 if (getArguments() != null) {
                     previousFragment = getArguments().getString("PREVIOUS_FRAGMENT");
+                    previousMenu = getArguments().getString("PREVIOUS_MENU");
                 }
 
                 Bundle bundle = new Bundle();
                 bundle.putString("PREVIOUS_FRAGMENT", previousFragment);
+                bundle.putString("PREVIOUS_MENU", previousMenu);
                 Navigation.findNavController(v).navigate(R.id.action_EditCategoryFragment_to_categoriesFragment, bundle);
 
             }

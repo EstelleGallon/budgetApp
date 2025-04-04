@@ -53,7 +53,12 @@
         android:id="@+id/navigation_calendar"
         android:name="fr.enst.budgetapp.ui.calendar.calendarFragment"
         android:label="@string/title_calendar"
-        tools:layout="@layout/fragment_calendar" />
+        tools:layout="@layout/fragment_calendar">
+
+        <action
+            android:id="@+id/action_calendarFragment_to_newTransactionFragment"
+            app:destination="@id/newTransactionFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/newSavingGoalFragment"
@@ -81,6 +86,11 @@
         <action
             android:id="@+id/action_newTransactionFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment" />
+
+        <action
+        android:id="@+id/action_newTransactionFragment_to_calendarFragment"
+        app:destination="@id/navigation_calendar" />
+
     </fragment>
 
     <fragment

@@ -25,6 +25,8 @@ import androidx.navigation.NavBackStackEntry;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.util.Objects;
+
 import fr.enst.budgetapp.R;
 
 public class NewTransactionFragment extends Fragment {
@@ -61,13 +63,29 @@ public class NewTransactionFragment extends Fragment {
         tvChooseCategory.setOnClickListener(v -> {
 
             Bundle bundleFrag = new Bundle();
-            bundleFrag.putString("PREVIOUS_FRAGMENT", "new");
+            bundleFrag.putString("PREVIOUS_FRAGMENT", "newTransaction");
+
+            Bundle retrievedBundle = getArguments();
+            if (retrievedBundle != null) {
+                String previousMenu = retrievedBundle.getString("PREVIOUS_MENU");
+                bundleFrag.putString("PREVIOUS_MENU", previousMenu);
+            }
 
             Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_categoriesFragment, bundleFrag);
         });
 
         // Handle Back button click
-        btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_listFragment));
+        btnBack.setOnClickListener(v -> {
+            if (getArguments() != null) {
+                String previousMenu = getArguments().getString("PREVIOUS_MENU");
+                System.out.println("previous page: " + previousMenu);
+                if (Objects.equals(previousMenu, "calendar"))
+                    Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_calendarFragment);
+                else if (Objects.equals(previousMenu, "list"))
+                    Navigation.findNavController(v).navigate(R.id.action_newTransactionFragment_to_listFragment);
+            }
+
+        });
 
         // Handle Save button click
         btnSave.setOnClickListener(v -> {

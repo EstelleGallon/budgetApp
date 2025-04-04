@@ -55,7 +55,7 @@ public class EditTransactionFragment extends Fragment {
         TextView tvChooseCategory = root.findViewById(R.id.tvEditChooseCategory);
         tvChooseCategory.setOnClickListener(v -> {
             Bundle bundleFrag = new Bundle();
-            bundleFrag.putString("PREVIOUS_FRAGMENT", "edit");
+            bundleFrag.putString("PREVIOUS_FRAGMENT", "editTransaction");
             Navigation.findNavController(v).navigate(R.id.action_editTransactionFragment_to_categoriesFragment, bundleFrag);
         });
 

@@ -129,7 +129,9 @@ public class listFragment extends Fragment {
         // add transaction button
         ImageView btnAddTransaction = root.findViewById(R.id.btnAddTransaction);
         btnAddTransaction.setOnClickListener(v -> {
-            Navigation.findNavController(v).navigate(R.id.action_listFragment_to_newTransactionFragment);
+            Bundle bundle = new Bundle();
+            bundle.putString("PREVIOUS_MENU", "list");
+            Navigation.findNavController(v).navigate(R.id.action_listFragment_to_newTransactionFragment, bundle);
         });
 
 
