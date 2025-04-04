@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_budgetFragment_to_editSavingGoalFragment"
             app:destination="@id/editSavingGoalFragment" />
+        <action
+            android:id="@+id/action_budgetFragment_to_newExpenseLimitFragment"
+            app:destination="@id/newExpenseLimitFragment" />
     </fragment>
 
     <fragment
@@ -106,6 +109,10 @@
         <action
             android:id="@+id/action_categoriesFragment_to_editTransactionFragment"
             app:destination="@id/editTransactionFragment"/>
+
+        <action
+            android:id="@+id/action_categoriesFragment_to_newExpenseLimitFragment"
+            app:destination="@id/newExpenseLimitFragment" />
     </fragment>
 
     <fragment
@@ -116,7 +123,20 @@
         <action
             android:id="@+id/action_EditCategoryFragment_to_categoriesFragment"
             app:destination="@id/categoriesFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/newExpenseLimitFragment"
+        android:name="fr.enst.budgetapp.ui.budget.NewExpenseLimitFragment"
+        android:label="New Expense Limit">
+        <action
+            android:id="@+id/action_newExpenseLimitFragment_to_budgetFragment"
+            app:destination="@id/navigation_budget" />
+        <action
+            android:id="@+id/action_newExpenseLimitFragment_to_categoriesFragment"
+            app:destination="@id/categoriesFragment" />
 
     </fragment>
+
 
 </navigation>

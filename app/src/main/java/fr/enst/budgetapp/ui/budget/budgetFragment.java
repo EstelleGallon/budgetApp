@@ -53,10 +53,18 @@ public class budgetFragment extends Fragment {
         binding = FragmentBudgetBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // ---- Navigation to New Saving Goal ----
         ImageView btnAddSavingGoal = root.findViewById(R.id.btnAddSavingGoal);
         btnAddSavingGoal.setOnClickListener(v -> {
             Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_newSavingGoalFragment);
         });
+
+        // --- Navigation to New Expense Limit ----
+        ImageView btnAddExpenseLimit = root.findViewById(R.id.btnAddExpenseLimit);
+        btnAddExpenseLimit.setOnClickListener(v -> {
+            Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_newExpenseLimitFragment);
+        });
+
 
         // Sample data for saving goals TODO: use actual data
         List<SavingGoal> savingGoals = Arrays.asList(
@@ -65,7 +73,7 @@ public class budgetFragment extends Fragment {
                 new SavingGoal("3", "New Car", 70, "2025-01-01", 20000)
         );
 
-        // Set up RecyclerView
+        // Set up RecyclerView for saving goals
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewSavingGoals);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         SavingGoalAdapter adapter = new SavingGoalAdapter(savingGoals);
@@ -122,7 +130,7 @@ public class budgetFragment extends Fragment {
                 .positionMode(TooltipPositionMode.POINT)
                 .anchor(Anchor.CENTER_BOTTOM)
                 .position(Position.CENTER_BOTTOM)
-                .format("{%Value}€");
+                .format("Spent: {%Value}€");
 
         // Enable interactivity
         cartesian.interactivity().hoverMode(HoverMode.BY_X);
