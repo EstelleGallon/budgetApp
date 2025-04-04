@@ -35,6 +35,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.enst.budgetapp.ExpenseLimit;
+import fr.enst.budgetapp.ExpenseLimitAdapter;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.SavingGoal;
 import fr.enst.budgetapp.SavingGoalAdapter;
@@ -78,6 +80,22 @@ public class budgetFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         SavingGoalAdapter adapter = new SavingGoalAdapter(savingGoals);
         recyclerView.setAdapter(adapter);
+
+
+        // Sample data for expense limits TODO: use actual data
+        List<ExpenseLimit> expenseLimits = Arrays.asList(
+                new ExpenseLimit("Food", new boolean[]{true, false, false, true, false, false, true, false, false, true, false, false}),
+                new ExpenseLimit("Transport", new boolean[]{false, false, true, false, false, true, false, false, true, false, false, true}),
+                new ExpenseLimit("Entertainment", new boolean[]{false, true, false, false, true, false, false, true, false, false, true, false})
+        );
+
+        // Set up RecyclerView for expense limits
+        RecyclerView recyclerViewExpenseLimits = root.findViewById(R.id.recyclerViewExpenseLimits);
+        recyclerViewExpenseLimits.setLayoutManager(new LinearLayoutManager(getContext()));
+        ExpenseLimitAdapter expenseLimitAdapter = new ExpenseLimitAdapter(expenseLimits, getContext());
+        recyclerViewExpenseLimits.setAdapter(expenseLimitAdapter);
+
+        recyclerViewExpenseLimits.setNestedScrollingEnabled(false); // Disable nested scrolling
 
 
         // ------- Expense Limit -------

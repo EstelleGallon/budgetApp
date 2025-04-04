@@ -15,7 +15,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="New Spending Limit"
+            android:text="Edit Expense Limit"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="center"
@@ -34,14 +34,14 @@
                 android:src="@drawable/ic_euro"
                 android:layout_marginEnd="8dp" />
 
+            <!-- TODO: change the hint to the actual amount -->
             <EditText
-                android:id="@+id/etTransactionAmount"
+                android:id="@+id/etEditExpenseLimitAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Amount (€)"
                 android:inputType="numberDecimal"/>
         </LinearLayout>
-
 
         <!-- Category -->
         <LinearLayout
@@ -51,14 +51,14 @@
             android:layout_marginBottom="16dp">
 
             <ImageView
-                android:id="@+id/ivChooseCategory"
+                android:id="@+id/ivEditChooseCategory"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:src="@drawable/ic_category"
                 android:layout_marginEnd="8dp" />
 
             <TextView
-                android:id="@+id/tvChooseCategory"
+                android:id="@+id/tvEditChooseCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Choose category"
@@ -80,8 +80,9 @@
                 android:src="@drawable/ic_calendar"
                 android:layout_marginEnd="8dp" />
 
+            <!-- TODO: change the hint to the actual date -->
             <EditText
-                android:id="@+id/etTransactionDate"
+                android:id="@+id/etEditExpenseLimitDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Date (YYYY-MM-DD)"
@@ -102,12 +103,11 @@
                 android:layout_marginEnd="8dp" />
 
             <Spinner
-                android:id="@+id/spinnerRepeat"
+                android:id="@+id/spinnerEditRepeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:entries="@array/repeat_array"
                 android:layout_gravity="center"/>
-
         </LinearLayout>
 
         <!-- Notes -->
@@ -124,7 +124,7 @@
                 android:layout_marginEnd="8dp" />
 
             <EditText
-                android:id="@+id/etTransactionNotes"
+                android:id="@+id/etEditExpenseLimitNotes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Notes"
@@ -139,14 +139,22 @@
             android:gravity="center">
 
             <Button
-                android:id="@+id/btnBack"
+                android:id="@+id/btnBackBudget"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Back"
                 android:layout_marginEnd="16dp" />
 
             <Button
-                android:id="@+id/btnSave"
+                android:id="@+id/btnDeleteExpenseLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Delete"
+                android:layout_marginEnd="16dp"
+                android:backgroundTint="@color/red" />
+
+            <Button
+                android:id="@+id/btnSaveExpenseLimit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Save" />

@@ -62,6 +62,8 @@ public class CategoryFragment  extends Fragment {
                     Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_editTransactionFragment, bundle);
                 } else if (Objects.equals(previousFragment, "newExpenseLimit")){
                     Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_newExpenseLimitFragment, bundle);
+                } else if (Objects.equals(previousFragment, "editExpenseLimit")) {
+                    Navigation.findNavController(v).navigate(R.id.action_categoriesFragment_to_editExpenseLimitFragment, bundle);
                 }
                 System.out.println("previous fragment: " + previousFragment);
             }
