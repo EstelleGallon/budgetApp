@@ -30,9 +30,12 @@ import com.anychart.scales.Linear;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
+import fr.enst.budgetapp.Balances;
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
 import fr.enst.budgetapp.TransactionAdapter;
@@ -61,16 +64,32 @@ public class overviewFragment extends Fragment {
         // Initialize the ViewPager2 for account balances
         ViewPager2 viewPager = root.findViewById(R.id.vpAccountBalances);
 
+
+        Balances balancesObj = JsonLoader.loadBalances(getContext());
+
+        String checkingFormatted = String.format("%,.2f€", balancesObj.checking);
+        String savingsFormatted = String.format("%,.2f€", balancesObj.savings);
+
+        List<Pair<String, String>> balances = Arrays.asList(
+                new Pair<>("Checking Account", checkingFormatted),
+                new Pair<>("Savings Account", savingsFormatted)
+        );
+
+
+        /*
         // Sample data for account balances (TODO: replace with actual data)
         List<Pair<String, String>> balances = Arrays.asList(
                 new Pair<>("Checking Account", "1 200,00€"),
                 new Pair<>("Savings Account", "5 000,00€")
         );
 
+        */
+
         // Set up the ViewPager2 adapter
         AccountBalanceAdapter adapter = new AccountBalanceAdapter(balances);
         viewPager.setAdapter(adapter);
 
+        /*
         // Initialize the RecyclerView for last transactions
         List<Transaction> transactions = Arrays.asList(
                 new Transaction("Groceries", "50,00€", "2023-10-01"),
@@ -78,9 +97,21 @@ public class overviewFragment extends Fragment {
                 new Transaction("Entertainment", "30,00€", "2023-10-03")
         );
 
+         */
+
+        //List<Transaction> transactions = Arrays.asList();
+
+        List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
+        if (transactions == null) transactions = new ArrayList<>();
+
+        Collections.sort(transactions, (t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()));
+
+        //Take the 3 latest transactions to display in the overview page
+        List<Transaction> recent = transactions.subList(0, Math.min(3, transactions.size()));
+
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions);
+        TransactionAdapter transactionAdapter = new TransactionAdapter(recent);
         recyclerView.setAdapter(transactionAdapter);
 
         // Initialize the bar chart

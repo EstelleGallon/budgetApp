@@ -38,7 +38,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
         holder.categoryNameTextView.setText(transaction.getCategoryName());
-        holder.moneyAmountTextView.setText(transaction.getMoneyAmount());
+
+        String sign = "";
+        if (transaction.getTransactionType().equalsIgnoreCase("Income")) {
+            sign = "+";
+        } else {
+            sign = "-";
+        }
+
+        holder.moneyAmountTextView.setText( sign + transaction.getMoneyAmount()  );
         if (showDate) {
             holder.transactionDateTextView.setVisibility(View.VISIBLE);
             holder.transactionDateTextView.setText(transaction.getTransactionDate());

@@ -3,6 +3,7 @@ package fr.enst.budgetapp.ui.list;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -22,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -36,6 +39,7 @@ import java.util.List;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
 import fr.enst.budgetapp.DateTransactionsAdapter;
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
 import fr.enst.budgetapp.TransactionAdapter;
@@ -53,6 +57,8 @@ public class listFragment extends Fragment {
     private RecyclerView outerRecyclerView;
     private DateTransactionsAdapter dateTransactionsAdapter;
 
+    private List<Transaction> transactions;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -69,6 +75,7 @@ public class listFragment extends Fragment {
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonthList);
 
 
+        /*
         // sample data TODO: replace with actual data
         List<Transaction> transactions = Arrays.asList(
                 new Transaction("Groceries", "45,00€", "2025-03-31"),
@@ -79,6 +86,22 @@ public class listFragment extends Fragment {
                 new Transaction("Holidays", "1000,00€", "2025-04-10"),
                 new Transaction("Entertainment", "30,00€", "2025-04-15")
         );
+
+        */
+
+        //List<Transaction> transactions = Arrays.asList();
+
+        // setup recyclerview
+        outerRecyclerView = root.findViewById(R.id.outerRecyclerView);
+        outerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        transactions = JsonLoader.loadTransactions(getContext());
+        if (transactions == null) {
+            transactions = new ArrayList<>();
+        }
+        JsonLoader.recomputeBalancesFromTransactions(getContext());
+
 
         // initialize calendar and update the month/year text
         calendar = Calendar.getInstance();
@@ -98,12 +121,10 @@ public class listFragment extends Fragment {
         });
 
 
-        // setup recyclerview
-        outerRecyclerView = root.findViewById(R.id.outerRecyclerView);
-        outerRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
-        outerRecyclerView.setAdapter(dateTransactionsAdapter);
+
+        //dateTransactionsAdapter = new DateTransactionsAdapter(dateTransactionPairs);
+        //outerRecyclerView.setAdapter(dateTransactionsAdapter);
 
         // add transaction button
         ImageView btnAddTransaction = root.findViewById(R.id.btnAddTransaction);
@@ -114,6 +135,9 @@ public class listFragment extends Fragment {
 
         return root;
     }
+
+
+
 
     private void updateMonthYear() {
         String monthYear = android.text.format.DateFormat.format("MMMM yyyy", calendar).toString();
@@ -128,6 +152,33 @@ public class listFragment extends Fragment {
 
         // 1) only keep transactions displayed month
         List<Transaction> currentTransactions = Transaction.filterYearAndMonth(transactions, currentMonthYear);
+
+        TextView tvIncomeMonth = binding.incomeSpendingsHeader.tvIncomeMonth;
+        TextView tvSpendingsMonth = binding.incomeSpendingsHeader.tvSpendingsMonth;
+
+
+        double incomeTotal = 0;
+        double spendingTotal = 0;
+
+        for (Transaction tx : currentTransactions) {
+            double amount = tx.getMoneyAmountDouble();
+
+            if (tx.getTransactionType().equalsIgnoreCase("Income")) {
+                incomeTotal += amount;
+            } else if (tx.getTransactionType().equalsIgnoreCase("Spending") || tx.getTransactionType().equalsIgnoreCase("Savings")) {
+                spendingTotal += amount;
+            }
+        }
+
+        DecimalFormat format = new DecimalFormat("#,##0.00€");
+
+        if (tvIncomeMonth != null) {
+            tvIncomeMonth.setText(format.format(incomeTotal));
+        }
+        if (tvSpendingsMonth != null) {
+            tvSpendingsMonth.setText(format.format(spendingTotal));
+        }
+
 
         // 2) grouping transactions by date
         HashMap<String, List<Transaction>> transactionsByDate = Transaction.groupTransactionsByDate(currentTransactions);

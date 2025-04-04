@@ -13,16 +13,25 @@ import java.util.List;
 import java.util.Objects;
 
 public class Transaction {
+
+    private final int id;
+
+    private final String transactionType;
     private final String categoryName;
     private final String moneyAmount;
     private final String transactionDate;
 
-    public Transaction(String categoryName, String moneyAmount, String transactionDate) {
+    public Transaction(int id, String transactionType, String categoryName, String moneyAmount, String transactionDate) {
+        this.id = id;
+        this.transactionType = transactionType;
         this.categoryName = categoryName;
         this.moneyAmount = moneyAmount;
         this.transactionDate = transactionDate;
     }
 
+    public int getId(){return id;}
+
+    public String getTransactionType(){return transactionType;}
     public String getCategoryName() {
         return categoryName;
     }
@@ -43,9 +52,17 @@ public class Transaction {
     public static String sumMoneyAmount(List<Transaction> transactions) {
         double amount = 0;
         for (Transaction transaction : transactions) {
-            amount += transaction.getMoneyAmountDouble();
+
+            if (transaction.getTransactionType().equalsIgnoreCase("Income")) {
+                amount += transaction.getMoneyAmountDouble();
+            } else {
+                amount -= transaction.getMoneyAmountDouble();
+            }
+
         }
-        return Double.toString(amount).replace(".", ",") + "€";
+        //return Double.toString(amount).replace(".", ",") + "€";
+        return String.format(java.util.Locale.FRANCE, "%.2f€", amount).replace(".", ",");
+
     }
 
     public static HashMap<String, List<Transaction>> groupTransactionsByDate(List<Transaction> transactions) {
