@@ -20,18 +20,29 @@ public class Transaction {
     private final String categoryName;
     private final String moneyAmount;
     private final String transactionDate;
+    private final String repeatFrequency;
+    private final boolean notification;
+    private final String notes;
 
-    public Transaction(int id, String transactionType, String categoryName, String moneyAmount, String transactionDate) {
+
+
+    public Transaction(int id, String transactionType, String categoryName,
+                       String moneyAmount, String transactionDate, String repeatFrequency, boolean notification,
+                       String notes) {
         this.id = id;
         this.transactionType = transactionType;
         this.categoryName = categoryName;
         this.moneyAmount = moneyAmount;
         this.transactionDate = transactionDate;
+        this.repeatFrequency = repeatFrequency;
+        this.notification =  notification;
+        this.notes = notes;
     }
 
     public int getId(){return id;}
 
     public String getTransactionType(){return transactionType;}
+
     public String getCategoryName() {
         return categoryName;
     }
@@ -43,6 +54,13 @@ public class Transaction {
     public String getTransactionDate() {
         return transactionDate;
     }
+
+    public String getRepeatFrequency(){return repeatFrequency;}
+
+    public boolean getNotification(){return notification;}
+
+    public String getNotes(){return notes;}
+
 
     public double getMoneyAmountDouble() {
         String digitAmount = moneyAmount.replaceAll("[^\\d,]", "");

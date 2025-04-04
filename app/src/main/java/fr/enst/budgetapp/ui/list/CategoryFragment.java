@@ -49,9 +49,12 @@ public class CategoryFragment  extends Fragment {
                 String categoryName = ((TextView) v).getText().toString();
                 System.out.println(categoryName);
 
-                // Create a bundle to send data to NewTransactionFragment
-                Bundle bundle = new Bundle();
+// Reuse the existing bundle if available
+                Bundle bundle = getArguments() != null ? new Bundle(getArguments()) : new Bundle();
+
+// Update just the category name
                 bundle.putString("CATEGORY_NAME", categoryName);
+
 
                 // retrieve previous fragment name
                 if (getArguments() != null) {

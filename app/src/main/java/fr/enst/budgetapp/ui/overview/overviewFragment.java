@@ -101,6 +101,11 @@ public class overviewFragment extends Fragment {
 
         //List<Transaction> transactions = Arrays.asList();
 
+
+        //The transactions JSON file in the assets folder is the initial setup. Once transactions
+        // are added, they are stored on the device's internal storage
+        // at: data/data/<your.app.package>/files/transactions.json" that can be accessed from
+        //View -> Tool Windows -> Device Explorer
         List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
         if (transactions == null) transactions = new ArrayList<>();
 
