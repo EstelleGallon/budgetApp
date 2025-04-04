@@ -240,6 +240,36 @@ public class EditTransactionFragment extends Fragment {
             Navigation.findNavController(v).navigate(R.id.action_editTransactionFragment_to_listFragment);
         });
 
+
+
+
+        btnDelete.setOnClickListener(v ->{
+            List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
+            if (transactions == null) transactions = new ArrayList<>();
+
+
+            for (int i = 0; i < transactions.size(); i++) {
+                if (transactions.get(i).getId() == finalTransactionId) {
+                    transactions.remove(i);
+                    break;
+                }
+            }
+
+
+            for (int i = 0; i < transactions.size(); i++) {
+                transactions.get(i).setId(i + 1);
+            }
+
+            JsonLoader.saveTransactions(getContext(), transactions);
+            JsonLoader.recomputeBalancesFromTransactions(getContext());
+
+            Toast.makeText(getContext(), "Transaction deleted!", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(v).navigate(R.id.action_editTransactionFragment_to_listFragment);
+
+
+
+        });
+
         return root;
     }
 

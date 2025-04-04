@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class Transaction {
 
-    private final int id;
+    private int id;
 
     private String transactionType;
     private String categoryName;
@@ -61,6 +61,7 @@ public class Transaction {
 
     public String getNotes(){return notes;}
 
+    public void setId(int id){this.id = id;}
 
     public void setTransactionType(String transactionType){this.transactionType = transactionType;}
 
