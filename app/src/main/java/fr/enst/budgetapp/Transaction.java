@@ -16,13 +16,13 @@ public class Transaction {
 
     private final int id;
 
-    private final String transactionType;
-    private final String categoryName;
-    private final String moneyAmount;
-    private final String transactionDate;
-    private final String repeatFrequency;
-    private final boolean notification;
-    private final String notes;
+    private String transactionType;
+    private String categoryName;
+    private String moneyAmount;
+    private String transactionDate;
+    private String repeatFrequency;
+    private boolean notification;
+    private String notes;
 
 
 
@@ -60,6 +60,30 @@ public class Transaction {
     public boolean getNotification(){return notification;}
 
     public String getNotes(){return notes;}
+
+
+    public void setTransactionType(String transactionType){this.transactionType = transactionType;}
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    public void setMoneyAmount(String moneyAmount) {
+        this.moneyAmount = moneyAmount;
+    }
+
+    public void setTransactionDate(String transactionDate) {
+        this.transactionDate = transactionDate;
+    }
+
+    public void setRepeatFrequency(String repeatFrequency){this.repeatFrequency = repeatFrequency;}
+
+    public void setNotification(boolean notification){this.notification = notification;}
+
+    public void setNotes(String notes){this.notes = notes;}
+
+
+
 
 
     public double getMoneyAmountDouble() {

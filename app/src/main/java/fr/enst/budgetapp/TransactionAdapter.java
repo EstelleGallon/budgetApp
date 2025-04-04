@@ -1,5 +1,7 @@
 package fr.enst.budgetapp;
 
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,14 +54,41 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             holder.transactionDateTextView.setText(transaction.getTransactionDate());
         } else {
             holder.transactionDateTextView.setVisibility(View.GONE);
-            View.OnClickListener editTransactionClickListener = new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Navigation.findNavController(v).navigate(R.id.action_listFragment_to_editTransactionFragment);
-                }
-            };
-            holder.transactionArea.setOnClickListener(editTransactionClickListener);
+
         }
+
+
+
+        View.OnClickListener editTransactionClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.action_listFragment_to_editTransactionFragment);
+            }
+        };
+        //holder.transactionArea.setOnClickListener(editTransactionClickListener);
+        holder.transactionArea.setOnClickListener(v -> {
+            Transaction selectedTx = transactions.get(position);
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("ID", selectedTx.getId());
+            Log.d("ID2", String.valueOf(selectedTx.getId()));
+            bundle.putString("CATEGORY_NAME", selectedTx.getCategoryName());
+            bundle.putString("TRANSACTION_TYPE", selectedTx.getTransactionType());
+            bundle.putString("MONEY_AMOUNT", selectedTx.getMoneyAmount());
+            bundle.putString("TRANSACTION_DATE", selectedTx.getTransactionDate());
+            bundle.putString("REPEAT", selectedTx.getRepeatFrequency());
+            bundle.putBoolean("NOTIFICATION", selectedTx.getNotification());
+            bundle.putString("NOTES", selectedTx.getNotes());
+
+            Navigation.findNavController(v).navigate(
+                    R.id.action_listFragment_to_editTransactionFragment, bundle
+            );
+        });
+
+
+
+
+
     }
 
     @Override
