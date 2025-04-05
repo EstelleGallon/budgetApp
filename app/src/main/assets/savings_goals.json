@@ -1,0 +1,18 @@
+[
+  {
+    "id": "1",
+    "title": "New Laptop",
+    "progressPercentage": 40,
+    "deadline": "2026-02-01",
+    "totalAmount": 3000,
+    "notes": "Aim for a programming one with high SPECS."
+  },
+  {
+    "id": "2",
+    "title": "First step towards laptop",
+    "progressPercentage": 25,
+    "deadline": "2025-08-01",
+    "totalAmount": 1500,
+    "notes": "First mini-goal"
+  }
+]

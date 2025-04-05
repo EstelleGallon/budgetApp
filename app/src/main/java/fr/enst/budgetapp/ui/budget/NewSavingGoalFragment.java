@@ -14,7 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import java.util.List;
+
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
+import fr.enst.budgetapp.SavingGoal;
 
 public class NewSavingGoalFragment extends Fragment {
 
@@ -38,19 +42,27 @@ public class NewSavingGoalFragment extends Fragment {
         // Handle Save button click
         btnSave.setOnClickListener(v -> {
             String name = etGoalName.getText().toString();
-            String amount = etGoalAmount.getText().toString();
+            String amountStr = etGoalAmount.getText().toString();
             String deadline = etGoalDeadline.getText().toString();
             String notes = etGoalNotes.getText().toString();
 
-            if (name.isEmpty() || amount.isEmpty() || deadline.isEmpty()) {
+            if (name.isEmpty() || amountStr.isEmpty() || deadline.isEmpty()) {
                 Toast.makeText(getContext(), "Please fill in all required fields.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // TODO: Save the new goal
-            Toast.makeText(getContext(), "New Saving Goal Added!", Toast.LENGTH_SHORT).show();
+            int amount = Integer.parseInt(amountStr);
 
-            // Navigate back to the Budget page
+            List<SavingGoal> goals = JsonLoader.loadSavingGoals(getContext());
+            String id = String.valueOf(goals.size() + 1);
+
+            // We'll compute the progress in BudgetFragment, so just initialize with 0
+            SavingGoal newGoal = new SavingGoal(id, name, 0, deadline, amount, notes);
+
+            goals.add(newGoal);
+            JsonLoader.saveSavingGoals(getContext(), goals);
+
+            Toast.makeText(getContext(), "New Saving Goal Added!", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(v).navigateUp();
         });
 

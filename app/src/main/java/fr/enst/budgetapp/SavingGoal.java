@@ -1,18 +1,21 @@
 package fr.enst.budgetapp;
 
 public class SavingGoal {
-    private final String id;
-    private final String title;
-    private final int progressPercentage;
-    private final String deadline;
-    private final int totalAmount;
+    private String id;
+    private String title;
+    private int progressPercentage;
+    private String deadline;
+    private int totalAmount;
 
-    public SavingGoal(String id, String title, int progressPercentage, String deadline, int totalAmount) {
+    private final String notes;
+
+    public SavingGoal(String id, String title, int progressPercentage, String deadline, int totalAmount, String notes) {
         this.id = id;
         this.title = title;
         this.progressPercentage = progressPercentage;
         this.deadline = deadline;
         this.totalAmount = totalAmount;
+        this.notes = notes;
     }
 
     public String getId() {
@@ -34,4 +37,9 @@ public class SavingGoal {
     public int getTotalAmount() {
         return totalAmount;
     }
+
+    public String getNotes(){ return notes;}
+
+    public void setProgressPercentage(int progressPercentage){this.progressPercentage = progressPercentage;}
+
 }

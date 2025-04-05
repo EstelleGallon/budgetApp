@@ -4,6 +4,7 @@ import static java.security.AccessController.getContext;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -12,6 +13,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -243,6 +246,57 @@ public class JsonLoader {
         }
     }
 
+
+
+
+
+    public static void saveSavingGoals(Context context, List<SavingGoal> goals) {
+        Gson gson = new Gson();
+        String json = gson.toJson(goals);
+
+        try (FileOutputStream fos = context.openFileOutput("savings_goals.json", Context.MODE_PRIVATE)) {
+            fos.write(json.getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static List<SavingGoal> loadSavingGoals(Context context) {
+        File file = new File(context.getFilesDir(), "savings_goals.json");
+
+        if (file.exists()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = fis.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                String json = baos.toString(StandardCharsets.UTF_8.name());
+                Type listType = new TypeToken<List<SavingGoal>>() {}.getType();
+                return new Gson().fromJson(json, listType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            InputStream is = context.getAssets().open("savings_goals.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            String json = new String(buffer, StandardCharsets.UTF_8);
+            Type listType = new TypeToken<List<SavingGoal>>() {}.getType();
+            return new Gson().fromJson(json, listType);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
 
 
 

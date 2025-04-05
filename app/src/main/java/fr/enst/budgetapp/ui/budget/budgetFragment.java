@@ -35,8 +35,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import fr.enst.budgetapp.Balances;
 import fr.enst.budgetapp.ExpenseLimit;
 import fr.enst.budgetapp.ExpenseLimitAdapter;
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.SavingGoal;
 import fr.enst.budgetapp.SavingGoalAdapter;
@@ -70,6 +72,7 @@ public class budgetFragment extends Fragment {
 
 
 
+        /*
         // Sample data for saving goals TODO: use actual data
         List<SavingGoal> savingGoals = Arrays.asList(
                 new SavingGoal("1","Vacation Fund", 50, "2023-12-31", 1000),
@@ -77,9 +80,25 @@ public class budgetFragment extends Fragment {
                 new SavingGoal("3", "New Car", 70, "2025-01-01", 20000)
         );
 
+         */
+
+
+
+        Balances balances = JsonLoader.loadBalances(getContext());
+        double savingsBalance = balances.savings;
+
+        List<SavingGoal> savingGoals = JsonLoader.loadSavingGoals(getContext());
+
+        for (SavingGoal goal : savingGoals) {
+            int percentage = (int) Math.min((savingsBalance / goal.getTotalAmount()) * 100, 100);
+            goal.setProgressPercentage(percentage);
+        }
+
+
         // Set up RecyclerView for saving goals
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewSavingGoals);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
         SavingGoalAdapter adapter = new SavingGoalAdapter(savingGoals);
         recyclerView.setAdapter(adapter);
 
