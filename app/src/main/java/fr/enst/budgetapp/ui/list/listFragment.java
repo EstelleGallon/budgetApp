@@ -177,9 +177,9 @@ public class listFragment extends Fragment {
             }
 
 
-            if (tx.getTransactionType().equalsIgnoreCase("Income") && !txDate.after(today) ) {
+            if (tx.getTransactionType().equalsIgnoreCase("Income")) {
                 incomeTotal += amount;
-            } else if ((tx.getTransactionType().equalsIgnoreCase("Spending") || tx.getTransactionType().equalsIgnoreCase("Savings")) && !txDate.after(today)) {
+            } else if ((tx.getTransactionType().equalsIgnoreCase("Spending") || tx.getTransactionType().equalsIgnoreCase("Savings"))) {
                 spendingTotal += amount;
             }
         }
