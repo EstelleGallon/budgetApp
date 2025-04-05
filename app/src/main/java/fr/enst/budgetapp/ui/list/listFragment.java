@@ -1,50 +1,36 @@
 package fr.enst.budgetapp.ui.list;
 
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager2.widget.ViewPager2;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import fr.enst.budgetapp.AccountBalanceAdapter;
 import fr.enst.budgetapp.DateTransactionsAdapter;
 import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
-import fr.enst.budgetapp.TransactionAdapter;
 import fr.enst.budgetapp.databinding.FragmentListBinding;
 
 public class listFragment extends Fragment {
@@ -151,6 +137,9 @@ public class listFragment extends Fragment {
 
     }
 
+
+
+
     private void updateTransactions(List<Transaction> transactions) {
         // prepare data:
 
@@ -183,6 +172,7 @@ public class listFragment extends Fragment {
                 spendingTotal += amount;
             }
         }
+
 
         DecimalFormat format = new DecimalFormat("#,##0.00€");
 

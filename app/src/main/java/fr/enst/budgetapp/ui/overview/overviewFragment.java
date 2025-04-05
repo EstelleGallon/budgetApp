@@ -1,14 +1,11 @@
 package fr.enst.budgetapp.ui.overview;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -26,16 +23,15 @@ import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
 import com.anychart.core.cartesian.series.Column;
+import com.anychart.core.cartesian.series.Line;
 import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.scales.Linear;
-import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -55,6 +51,9 @@ import fr.enst.budgetapp.TransactionAdapter;
 import fr.enst.budgetapp.databinding.FragmentOverviewBinding;
 import fr.enst.budgetapp.Category;
 
+
+
+
 public class overviewFragment extends Fragment {
 
     private FragmentOverviewBinding binding;
@@ -70,16 +69,24 @@ public class overviewFragment extends Fragment {
     private AnyChartView barChart;
     private Column series1;
 
-    Cartesian bar;
+    private Cartesian bar;
 
 
+    private Cartesian line;
 
+    private Line series2;
+
+    private Line series3;
     private AnyChartView lineChart;
+
+
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         overviewViewModel overviewViewModel =
                 new ViewModelProvider(this).get(overviewViewModel.class);
+
 
         binding = FragmentOverviewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -99,29 +106,6 @@ public class overviewFragment extends Fragment {
         );
 
 
-        /*
-        // Sample data for account balances (TODO: replace with actual data)
-        List<Pair<String, String>> balances = Arrays.asList(
-                new Pair<>("Checking Account", "1 200,00€"),
-                new Pair<>("Savings Account", "5 000,00€")
-        );
-
-        */
-
-        // Set up the ViewPager2 adapter
-
-
-        /*
-        // Initialize the RecyclerView for last transactions
-        List<Transaction> transactions = Arrays.asList(
-                new Transaction("Groceries", "50,00€", "2023-10-01"),
-                new Transaction("Transport", "20,00€", "2023-10-02"),
-                new Transaction("Entertainment", "30,00€", "2023-10-03")
-        );
-
-         */
-
-        //List<Transaction> transactions = Arrays.asList();
 
 
         //The transactions JSON file in the assets folder is the initial setup. Once transactions
@@ -291,11 +275,105 @@ public class overviewFragment extends Fragment {
 
         // Initialize the line chart
         tvMonthYearExpensesVsIncome = root.findViewById(R.id.tvMonthYear2);
+
         lineChart = root.findViewById(R.id.chartExpensesVsIncome);
         APIlib.getInstance().setActiveAnyChartView(lineChart);
+
         ImageButton btnPrevMonthExpensesVsIncome = root.findViewById(R.id.btnPrevMonth2);
         ImageButton btnNextMonthExpensesVsIncome = root.findViewById(R.id.btnNextMonth2);
         calendarExpensesVsIncome = Calendar.getInstance();
+
+        line = AnyChart.line();
+        line.title("Cumulative Expenses vs. Income");
+
+        line.tooltip()
+                .positionMode(TooltipPositionMode.POINT)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .position(Position.CENTER_BOTTOM)
+                .format("{%Value}€");
+
+        line.interactivity().hoverMode(HoverMode.BY_X);
+        line.animation(true);
+        line.yAxis(0).labels().format("{%Value}€");
+
+        Linear xScale = Linear.instantiate();
+        xScale.minimum(1);
+        xScale.maximum(31);
+        line.xScale(xScale);
+        line.xAxis(0).title("Days").labels().format("{%Value}");
+
+
+
+        String currentMonth = android.text.format.DateFormat.format("yyyy-MM", calendarExpensesVsIncome).toString();
+
+
+        Map<Integer, Double> incomePerDay = new HashMap<>();
+        Map<Integer, Double> expensePerDay = new HashMap<>();
+
+        for (Transaction tx : allTransactions) {
+            try {
+                Date txDate = sdf.parse(tx.getTransactionDate());
+                Calendar txCal = Calendar.getInstance();
+                txCal.setTime(txDate);
+
+                String txMonth = android.text.format.DateFormat.format("yyyy-MM", txCal).toString();
+                if (!txMonth.equals(currentMonth)) continue;
+
+                int day = txCal.get(Calendar.DAY_OF_MONTH);
+                double amount = tx.getMoneyAmountDouble();
+
+                if (tx.getTransactionType().equalsIgnoreCase("Income")) {
+                    incomePerDay.merge(day, amount, Double::sum);
+                } else if (tx.getTransactionType().equalsIgnoreCase("Spending")) {
+                    expensePerDay.merge(day, amount, Double::sum);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        Calendar now = Calendar.getInstance();
+        boolean isCurrentMonth = (
+                calendarExpensesVsIncome.get(Calendar.MONTH) == now.get(Calendar.MONTH) &&
+                        calendarExpensesVsIncome.get(Calendar.YEAR) == now.get(Calendar.YEAR)
+        );
+        int maxDay = isCurrentMonth
+                ? now.get(Calendar.DAY_OF_MONTH)
+                : calendarExpensesVsIncome.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+
+        List<DataEntry> incomeData = new ArrayList<>();
+        List<DataEntry> expenseData = new ArrayList<>();
+
+        double cumulativeIncome = 0;
+        double cumulativeExpenses = 0;
+
+        for (int day = 1; day <= maxDay; day++) {
+            cumulativeIncome += incomePerDay.getOrDefault(day, 0.0);
+            cumulativeExpenses += expensePerDay.getOrDefault(day, 0.0);
+
+            incomeData.add(new ValueDataEntry(String.valueOf(day), cumulativeIncome));
+            expenseData.add(new ValueDataEntry(String.valueOf(day), cumulativeExpenses));
+        }
+
+        line.legend().enabled(true);
+        line.legend()
+                .fontSize(14)
+                .padding(10, 10, 10, 10);
+
+
+        series2 = (Line) line.line(expenseData).name("Expenses").color("#FF5733");
+        series3 = (Line) line.line(incomeData).name("Income").color("#33FF57");
+
+
+        lineChart.setChart(line);
+
+
+
+
+
 
         updateMonthYear(tvMonthYearExpensesVsIncome, calendarExpensesVsIncome);
         btnPrevMonthExpensesVsIncome.setOnClickListener(v -> {
@@ -311,10 +389,6 @@ public class overviewFragment extends Fragment {
             updateLineChart();
         });
 
-
-        //updateLineChart();
-
-
         return root;
     }
 
@@ -323,54 +397,7 @@ public class overviewFragment extends Fragment {
         textView.setText(monthYear);
     }
 
-    private void updateLineChart(){
-        // Create a line chart
-        Cartesian line = AnyChart.line();
 
-        // Set the title of the chart
-        line.title("Cumulative Expenses vs. Income");
-
-        // Configure tooltips
-        line.tooltip()
-                .positionMode(TooltipPositionMode.POINT)
-                .anchor(Anchor.CENTER_BOTTOM)
-                .position(Position.CENTER_BOTTOM)
-                .format("{%Value}€");
-
-
-        line.interactivity().hoverMode(HoverMode.BY_X);
-        line.animation(true);
-
-        line.yAxis(0).labels().format("{%Value}€");
-
-        Linear xScale = Linear.instantiate();
-        xScale.minimum(1);
-        xScale.maximum(31);
-        line.xScale(xScale);
-        line.xAxis(0).title("Days").labels().format("{%Value}");
-
-        // Hardcoded data for testing
-        List<DataEntry> expensesData = new ArrayList<>();
-        expensesData.add(new ValueDataEntry("1", 50));
-        expensesData.add(new ValueDataEntry("2", 100));
-        expensesData.add(new ValueDataEntry("3", 150));
-        expensesData.add(new ValueDataEntry("4", 200));
-
-        List<DataEntry> incomeData = new ArrayList<>();
-        incomeData.add(new ValueDataEntry("1", 100));
-        incomeData.add(new ValueDataEntry("2", 200));
-        incomeData.add(new ValueDataEntry("3", 300));
-        incomeData.add(new ValueDataEntry("4", 400));
-
-
-        // Add series for expenses and income
-        line.line(expensesData).name("Expenses").color("#FF5733");
-        line.line(incomeData).name("Income").color("#33FF57");
-
-        // Attach the chart to the AnyChartView
-
-        lineChart.setChart(line);
-    }
 
 
     private void updateBarChart() {
@@ -434,6 +461,83 @@ public class overviewFragment extends Fragment {
 
 
     }
+
+
+    private void updateLineChart() {
+        if (line == null) return;
+
+        String currentMonth = android.text.format.DateFormat.format("yyyy-MM", calendarExpensesVsIncome).toString();
+        List<Transaction> allTransactions = JsonLoader.loadTransactions(getContext());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        Map<Integer, Double> incomePerDay = new HashMap<>();
+        Map<Integer, Double> expensePerDay = new HashMap<>();
+
+        for (Transaction tx : allTransactions) {
+            try {
+                Date txDate = sdf.parse(tx.getTransactionDate());
+                Calendar txCal = Calendar.getInstance();
+                txCal.setTime(txDate);
+
+                String txMonth = android.text.format.DateFormat.format("yyyy-MM", txCal).toString();
+                if (!txMonth.equals(currentMonth)) continue;
+
+                int day = txCal.get(Calendar.DAY_OF_MONTH);
+                double amount = tx.getMoneyAmountDouble();
+
+                if (tx.getTransactionType().equalsIgnoreCase("Income")) {
+                    incomePerDay.merge(day, amount, Double::sum);
+                } else if (tx.getTransactionType().equalsIgnoreCase("Spending")) {
+                    expensePerDay.merge(day, amount, Double::sum);
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        Calendar now = Calendar.getInstance();
+        boolean isCurrentMonth = (
+                calendarExpensesVsIncome.get(Calendar.MONTH) == now.get(Calendar.MONTH) &&
+                        calendarExpensesVsIncome.get(Calendar.YEAR) == now.get(Calendar.YEAR)
+        );
+        int maxDay = isCurrentMonth
+                ? now.get(Calendar.DAY_OF_MONTH)
+                : calendarExpensesVsIncome.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+
+        List<DataEntry> incomeData = new ArrayList<>();
+        List<DataEntry> expenseData = new ArrayList<>();
+
+        double cumulativeIncome = 0;
+        double cumulativeExpenses = 0;
+
+        for (int day = 1; day <= maxDay; day++) {
+            cumulativeIncome += incomePerDay.getOrDefault(day, 0.0);
+            cumulativeExpenses += expensePerDay.getOrDefault(day, 0.0);
+
+            incomeData.add(new ValueDataEntry(String.valueOf(day), cumulativeIncome));
+            expenseData.add(new ValueDataEntry(String.valueOf(day), cumulativeExpenses));
+        }
+
+        // Update the chart
+        series2.data(expenseData);
+        series3.data(incomeData);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        APIlib.getInstance().setActiveAnyChartView(barChart);
+        updateBarChart();
+        APIlib.getInstance().setActiveAnyChartView(lineChart);
+        updateLineChart();
+    }
+
+
+
 
 
     private static class CustomDataEntry extends ValueDataEntry {
