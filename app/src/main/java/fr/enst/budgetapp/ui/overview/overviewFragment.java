@@ -1,11 +1,14 @@
 package fr.enst.budgetapp.ui.overview;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -22,11 +25,13 @@ import com.anychart.AnyChartView;
 import com.anychart.chart.common.dataentry.DataEntry;
 import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Cartesian;
+import com.anychart.core.cartesian.series.Column;
 import com.anychart.enums.Anchor;
 import com.anychart.enums.HoverMode;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 import com.anychart.scales.Linear;
+import com.google.gson.Gson;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,6 +43,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.HashMap;
 
 import fr.enst.budgetapp.AccountBalanceAdapter;
 import fr.enst.budgetapp.Balances;
@@ -46,17 +53,27 @@ import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
 import fr.enst.budgetapp.TransactionAdapter;
 import fr.enst.budgetapp.databinding.FragmentOverviewBinding;
+import fr.enst.budgetapp.Category;
 
 public class overviewFragment extends Fragment {
 
     private FragmentOverviewBinding binding;
-    private Calendar calendarSpendingsPerCategory;
+
+    //private Calendar calendarSpendingsPerCategory;
+    private Calendar calendarSpendingsPerCategory = Calendar.getInstance();
+
     private Calendar calendarExpensesVsIncome;
 
     private TextView tvMonthYearSpendingsPerCategory;
     private TextView tvMonthYearExpensesVsIncome;
 
     private AnyChartView barChart;
+    private Column series1;
+
+    Cartesian bar;
+
+
+
     private AnyChartView lineChart;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -169,22 +186,96 @@ public class overviewFragment extends Fragment {
         viewPager.setAdapter(adapter);
 
 
-        // Initialize the bar chart
         tvMonthYearSpendingsPerCategory= root.findViewById(R.id.tvMonthYear);
+
+
+
+        //SPENDINGS PER CATEGORY INITIAL SETUP
         barChart = root.findViewById(R.id.chartSpendingPerCategory);
+
         APIlib.getInstance().setActiveAnyChartView(barChart);
+
+        bar = AnyChart.column();
+
+        bar.title("Spendings per category");
+        bar.tooltip()
+                .positionMode(TooltipPositionMode.POINT)
+                .anchor(Anchor.CENTER_BOTTOM)
+                .position(Position.CENTER_BOTTOM)
+                .format("{%Value}€");
+        bar.animation(true);
+        bar.interactivity().hoverMode(HoverMode.BY_X);
+
+
+
+
+        Map<String, Double> spendingsPerCategory = new HashMap<>();
+        List<Transaction> allTransactions = JsonLoader.loadTransactions(getContext());
+        sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        for (Transaction tx : allTransactions) {
+            if (!"Spending".equalsIgnoreCase(tx.getTransactionType())) continue;
+            try {
+                Date txDate = sdf.parse(tx.getTransactionDate());
+                Calendar txCal = Calendar.getInstance();
+                txCal.setTime(txDate);
+
+                Log.d("MONTHCAL", "Current chart month: " + calendarSpendingsPerCategory.get(Calendar.MONTH));
+                if (txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
+                        txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)) {
+                    spendingsPerCategory.merge(tx.getCategoryName(), tx.getMoneyAmountDouble(), Double::sum);
+                    Log.d("TRANSACT_INSIDE", tx.getCategoryName() + ": " + tx.getMoneyAmount());
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Log.d("BAR_CHART", "Filtered entries: " + spendingsPerCategory.size());
+
+        Map<String, String> categoryColorMap = new HashMap<>();
+        List<Category> allCategories = JsonLoader.loadCategories(getContext());
+        for (Category cat : allCategories) {
+            if (spendingsPerCategory.containsKey(cat.getName())) {
+                categoryColorMap.put(cat.getName(), String.format("#%06X", (0xFFFFFF & cat.getColor())));
+            }
+        }
+
+        List<DataEntry> data = new ArrayList<>();
+        for (Map.Entry<String, Double> entry : spendingsPerCategory.entrySet()) {
+            String category = entry.getKey();
+            double amount = entry.getValue();
+            String color = categoryColorMap.getOrDefault(category, "#888888");
+            Log.d("ENTRY", category + ": " + amount);
+            data.add(new CustomDataEntry(category, amount, color));
+        }
+
+        Log.d("TRYTRY", "I was here");
+        bar.yAxis(0).labels().format("{%Value}€");
+
+        series1 = bar.column(data);
+        series1.stroke(null);
+        barChart.setChart(bar);
+
+
+
 
         ImageButton btnPrevMonth = root.findViewById(R.id.btnPrevMonth);
         ImageButton btnNextMonth = root.findViewById(R.id.btnNextMonth);
 
-        calendarSpendingsPerCategory = Calendar.getInstance();
+        //calendarSpendingsPerCategory = Calendar.getInstance();
         updateMonthYear(tvMonthYearSpendingsPerCategory, calendarSpendingsPerCategory);
 
+
+
+        //Buttons for Bar chart for expenses per category
         btnPrevMonth.setOnClickListener(v -> {
             calendarSpendingsPerCategory.add(Calendar.MONTH, -1);
             updateMonthYear(tvMonthYearSpendingsPerCategory, calendarSpendingsPerCategory);
             APIlib.getInstance().setActiveAnyChartView(barChart);
+            Log.d("UPDATE STATUS","to be updated");
             updateBarChart();
+            Log.d("UPDATE STATUS","updated!!!");
         });
 
         btnNextMonth.setOnClickListener(v -> {
@@ -194,8 +285,8 @@ public class overviewFragment extends Fragment {
             updateBarChart();
         });
 
-        // Set up the bar chart with hardcoded values
-        updateBarChart();
+
+
 
 
         // Initialize the line chart
@@ -220,7 +311,8 @@ public class overviewFragment extends Fragment {
             updateLineChart();
         });
 
-        updateLineChart();
+
+        //updateLineChart();
 
 
         return root;
@@ -276,41 +368,73 @@ public class overviewFragment extends Fragment {
         line.line(incomeData).name("Income").color("#33FF57");
 
         // Attach the chart to the AnyChartView
+
         lineChart.setChart(line);
     }
 
+
     private void updateBarChart() {
-        // Create a bar chart
-        Cartesian bar = AnyChart.column();
 
-        // Set the title of the chart
-        bar.title("Spendings per category");
-
-        // Configure tooltips
-        bar.tooltip()
-                .positionMode(TooltipPositionMode.POINT)
-                .anchor(Anchor.CENTER_BOTTOM)
-                .position(Position.CENTER_BOTTOM)
-                .format("{%Value}€");
+        Log.d("CHART_DEBUG", "updateBarChart() called for month: " +
+                calendarSpendingsPerCategory.get(Calendar.MONTH));
 
 
-        bar.animation(true);
-        // Enable interactivity
-        bar.interactivity().hoverMode(HoverMode.BY_X);
+            Map<String, Double> spendingsPerCategory = new HashMap<>();
+            List<Transaction> allTransactions = JsonLoader.loadTransactions(getContext());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
-        // Hardcoded data for testing
-        List<DataEntry> data = new ArrayList<>();
-        data.add(new CustomDataEntry("Food", 250, "#FF5733")); // Category: Food, Amount: 250, Color: Red
-        data.add(new CustomDataEntry("Transport", 150, "#33FF57")); // Category: Transport, Amount: 150, Color: Green
-        data.add(new CustomDataEntry("Entertainment", 100, "#3357FF")); // Category: Entertainment, Amount: 100, Color: Blue
-        data.add(new CustomDataEntry("Utilities", 200, "#FFC300")); // Category: Utilities, Amount: 200, Color: Yellow
+            for (Transaction tx : allTransactions) {
+                if (!"Spending".equalsIgnoreCase(tx.getTransactionType())) continue;
+                try {
+                    Date txDate = sdf.parse(tx.getTransactionDate());
+                    Calendar txCal = Calendar.getInstance();
+                    txCal.setTime(txDate);
 
-        // Set the data to the chart
-        bar.data(data);
-        bar.yAxis(0).labels().format("{%Value}€");
-        // Attach the chart to the AnyChartView
-        barChart.setChart(bar);
+                    Log.d("MONTHCAL", "Current chart month: " + calendarSpendingsPerCategory.get(Calendar.MONTH));
+                    if (txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
+                            txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)) {
+                        spendingsPerCategory.merge(tx.getCategoryName(), tx.getMoneyAmountDouble(), Double::sum);
+                        Log.d("TRANSACT_INSIDE", tx.getCategoryName() + ": " + tx.getMoneyAmount());
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            Log.d("BAR_CHART", "Filtered entries: " + spendingsPerCategory.size());
+
+            Map<String, String> categoryColorMap = new HashMap<>();
+            List<Category> allCategories = JsonLoader.loadCategories(getContext());
+            for (Category cat : allCategories) {
+                if (spendingsPerCategory.containsKey(cat.getName())) {
+                    categoryColorMap.put(cat.getName(), String.format("#%06X", (0xFFFFFF & cat.getColor())));
+                }
+            }
+
+            List<DataEntry> data = new ArrayList<>();
+            for (Map.Entry<String, Double> entry : spendingsPerCategory.entrySet()) {
+                String category = entry.getKey();
+                double amount = entry.getValue();
+                String color = categoryColorMap.getOrDefault(category, "#888888");
+                Log.d("ENTRY", category + ": " + amount);
+                data.add(new CustomDataEntry(category, amount, color));
+            }
+
+            Log.d("GENERATE NUMBER", String.valueOf(Math.random()));
+
+            APIlib.getInstance().setActiveAnyChartView(barChart);
+
+
+        if (data.isEmpty()) {;
+            data.add(new CustomDataEntry("", 0, "#FFFFFF")); // needed or else will load the last bar
+        }
+        series1.data(data);
+
+
+
+
     }
+
 
     private static class CustomDataEntry extends ValueDataEntry {
         CustomDataEntry(String x, Number value, String color) {
