@@ -62,12 +62,12 @@
   {
     "id": 7,
     "transactionType": "Spending",
-    "categoryName": "Entertainment",
+    "categoryName": "Transportatiom",
     "moneyAmount": "30,00€",
     "transactionDate": "2025-04-11",
     "repeatFrequency": "Never",
     "notification": false,
-    "notes": "Went out with friends"
+    "notes": "Transportation card"
   },
 
   {

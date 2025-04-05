@@ -198,15 +198,19 @@ public class overviewFragment extends Fragment {
         sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
         for (Transaction tx : allTransactions) {
-            if (!"Spending".equalsIgnoreCase(tx.getTransactionType())) continue;
+            if (!"Spending".equalsIgnoreCase(tx.getTransactionType()) &&
+                    !"Savings".equalsIgnoreCase(tx.getTransactionType())) continue;
+
             try {
                 Date txDate = sdf.parse(tx.getTransactionDate());
                 Calendar txCal = Calendar.getInstance();
                 txCal.setTime(txDate);
 
                 Log.d("MONTHCAL", "Current chart month: " + calendarSpendingsPerCategory.get(Calendar.MONTH));
-                if (txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
-                        txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)) {
+                if(txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
+                        txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)){
+
+
                     spendingsPerCategory.merge(tx.getCategoryName(), tx.getMoneyAmountDouble(), Double::sum);
                     Log.d("TRANSACT_INSIDE", tx.getCategoryName() + ": " + tx.getMoneyAmount());
                 }
@@ -324,7 +328,7 @@ public class overviewFragment extends Fragment {
 
                 if (tx.getTransactionType().equalsIgnoreCase("Income")) {
                     incomePerDay.merge(day, amount, Double::sum);
-                } else if (tx.getTransactionType().equalsIgnoreCase("Spending")) {
+                } else {
                     expensePerDay.merge(day, amount, Double::sum);
                 }
 
@@ -411,15 +415,17 @@ public class overviewFragment extends Fragment {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
             for (Transaction tx : allTransactions) {
-                if (!"Spending".equalsIgnoreCase(tx.getTransactionType())) continue;
+                if (!"Spending".equalsIgnoreCase(tx.getTransactionType()) &&
+                        !"Savings".equalsIgnoreCase(tx.getTransactionType())) continue;
+
                 try {
                     Date txDate = sdf.parse(tx.getTransactionDate());
                     Calendar txCal = Calendar.getInstance();
                     txCal.setTime(txDate);
 
                     Log.d("MONTHCAL", "Current chart month: " + calendarSpendingsPerCategory.get(Calendar.MONTH));
-                    if (txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
-                            txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)) {
+                    if( txCal.get(Calendar.MONTH) == calendarSpendingsPerCategory.get(Calendar.MONTH) &&
+                            txCal.get(Calendar.YEAR) == calendarSpendingsPerCategory.get(Calendar.YEAR)){
                         spendingsPerCategory.merge(tx.getCategoryName(), tx.getMoneyAmountDouble(), Double::sum);
                         Log.d("TRANSACT_INSIDE", tx.getCategoryName() + ": " + tx.getMoneyAmount());
                     }
@@ -487,7 +493,7 @@ public class overviewFragment extends Fragment {
 
                 if (tx.getTransactionType().equalsIgnoreCase("Income")) {
                     incomePerDay.merge(day, amount, Double::sum);
-                } else if (tx.getTransactionType().equalsIgnoreCase("Spending")) {
+                } else  {
                     expensePerDay.merge(day, amount, Double::sum);
                 }
 
