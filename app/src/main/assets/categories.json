@@ -1,0 +1,42 @@
+[
+  {
+    "name": "Groceries",
+    "color": "#FAA9D8",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Entertainment",
+    "color": "#8FD4FA",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Transportation",
+    "color": "#A8FA91",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Healthcare",
+    "color": "#F9FA97",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Utilities",
+    "color": "#CCAAFA",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Salary",
+    "color": "#B3FAFF",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Social Security Benefits",
+    "color": "#FFC3A0",
+    "iconResId": "ic_circle_filled"
+  },
+  {
+    "name": "Test category",
+    "color": "#FFC4A0",
+    "iconResId": "ic_circle_filled"
+  }
+]

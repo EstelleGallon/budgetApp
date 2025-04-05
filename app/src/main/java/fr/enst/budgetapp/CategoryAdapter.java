@@ -41,6 +41,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             if (nameClickListener != null) {
                 nameClickListener.onClick(v);
             }
+
         });
 
     }

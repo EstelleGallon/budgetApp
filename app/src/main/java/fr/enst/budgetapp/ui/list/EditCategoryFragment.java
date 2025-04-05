@@ -21,6 +21,7 @@ import java.util.List;
 import fr.enst.budgetapp.Category;
 import fr.enst.budgetapp.CategoryAdapter;
 import fr.enst.budgetapp.EditCategoryAdapter;
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 
 public class EditCategoryFragment extends Fragment {
@@ -33,6 +34,7 @@ public class EditCategoryFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.recyclerViewEditCategories);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        /*
         // Create a list of categories
         List<Category> categoryList = new ArrayList<>();
         categoryList.add(new Category("Groceries", Color.parseColor("#FAA9D8"), R.drawable.ic_circle_filled));
@@ -41,6 +43,9 @@ public class EditCategoryFragment extends Fragment {
         categoryList.add(new Category("Healthcare", Color.parseColor("#F9FA97"), R.drawable.ic_circle_filled));
         categoryList.add(new Category("Utilities", Color.parseColor("#CCAAFA"), R.drawable.ic_circle_filled));
 
+        */
+
+        List<Category> categoryList = JsonLoader.loadCategories(getContext());
 
         View.OnClickListener nameClickListener = new View.OnClickListener() {
             @Override
@@ -58,6 +63,8 @@ public class EditCategoryFragment extends Fragment {
             }
         };
 
+
+        /*
         View.OnClickListener deleteClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +82,32 @@ public class EditCategoryFragment extends Fragment {
                         .show();
             }
         };
+*/
+
+        View.OnClickListener deleteClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Delete Category")
+                        .setMessage("Are you sure you want to delete this category?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                RecyclerView recyclerView = ((RecyclerView) ((View) v.getParent().getParent()));
+                                RecyclerView.ViewHolder viewHolder = recyclerView.findContainingViewHolder(v);
+                                if (viewHolder != null) {
+                                    int position = viewHolder.getAdapterPosition();
+                                    categoryList.remove(position);
+                                    recyclerView.getAdapter().notifyItemRemoved(position);
+                                }
+                            }
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
+            }
+        };
+
+
 
         Button saveBtn = rootView.findViewById(R.id.btnSaveCategories);
         View.OnClickListener saveClickListener = new View.OnClickListener() {
@@ -82,6 +115,7 @@ public class EditCategoryFragment extends Fragment {
             public void onClick(View v) {
                 // TODO:
                 //  - 6) save all the changes
+                JsonLoader.saveCategories(getContext(), categoryList);
 
                 // retrieve previous fragment name
                 String previousFragment = "";
