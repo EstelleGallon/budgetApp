@@ -42,4 +42,7 @@ public class SavingGoal {
 
     public void setProgressPercentage(int progressPercentage){this.progressPercentage = progressPercentage;}
 
+    public void setId(String id){this.id = id;}
+
+
 }
