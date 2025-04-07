@@ -1,5 +1,8 @@
 package fr.enst.budgetapp.ui.calendar;
 
+import static fr.enst.budgetapp.Transaction.getTransactionsOfTheDay;
+import static fr.enst.budgetapp.Transaction.getWeekday;
+
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,9 +20,12 @@ import com.applandeo.materialcalendarview.CalendarDay;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.listeners.OnCalendarDayClickListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import fr.enst.budgetapp.JsonLoader;
@@ -88,7 +94,11 @@ public class calendarFragment extends Fragment {
             @Override
             public void onClick(@NonNull CalendarDay calendarDay) {
                 Calendar clickedDayCalendar = calendarDay.getCalendar();
-                showDayTransactions(clickedDayCalendar);
+                try {
+                    showDayTransactions(clickedDayCalendar);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
         });
@@ -96,11 +106,28 @@ public class calendarFragment extends Fragment {
         return root;
     }
 
-    private void showDayTransactions(Calendar clickedDayCalendar) {
+    private void showDayTransactions(Calendar clickedDayCalendar) throws ParseException {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // TODO: connect date to transactions of the day
-        builder.setTitle("Transactions of the day");
-        builder.setMessage(clickedDayCalendar.getTime() + "blabla");
+
+
+        // format the date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String formattedDate = dateFormat.format(clickedDayCalendar.getTime());
+
+
+        builder.setTitle(getWeekday(formattedDate));
+
+        // list the transactions
+        List<Transaction> transactionsOfTheDay = getTransactionsOfTheDay(transactions, formattedDate);
+        String message = "";
+        for (Transaction transaction : transactionsOfTheDay) {
+            message += transaction.getTransactionType() + ": ";
+            message += transaction.getCategoryName() + " ";
+            message += transaction.getMoneyAmount() + "\n";
+        }
+
+        builder.setMessage(message);
         builder.setPositiveButton("OK", (dialog, which) -> dialog.dismiss());
         builder.show();
     }

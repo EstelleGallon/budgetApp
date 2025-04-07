@@ -179,6 +179,18 @@ public class Transaction {
         return filteredTransactions;
     }
 
+    public static List<Transaction> getTransactionsOfTheDay(List<Transaction> allTransactions, String Date) {
+
+        List<Transaction> filteredTransactions = new ArrayList<>();
+        for (Transaction transaction : allTransactions) {
+
+            if (Objects.equals(transaction.getTransactionDate(), Date)) {
+                filteredTransactions.add(transaction);
+            }
+        }
+        return filteredTransactions;
+    }
+
     public static String getWeekday(String initialDate) throws ParseException {
         SimpleDateFormat originalFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = originalFormat.parse(initialDate);
