@@ -56,6 +56,16 @@ public class Transaction {
         return transactionDate;
     }
 
+    public Date getDate() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Adjust the pattern as needed
+        try {
+            return dateFormat.parse(transactionDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public String getRepeatFrequency(){return repeatFrequency;}
 
     public boolean getNotification(){return notification;}
@@ -185,4 +195,6 @@ public class Transaction {
 
         return weekdayName + ", " + dayOfMonth;
     }
+
+
 }

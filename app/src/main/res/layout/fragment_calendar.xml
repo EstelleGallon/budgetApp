@@ -12,10 +12,15 @@
         android:orientation="vertical"
         >
 
-        <CalendarView
+        <com.applandeo.materialcalendarview.CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:headerColor="@color/light_blueish_gray"
+            app:headerLabelColor="@color/daysLabelColor"
+            app:previousButtonSrc="@drawable/ic_back_arrow_grey"
+            app:forwardButtonSrc="@drawable/ic_forward_arrow_grey"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,7 +41,7 @@
                     android:layout_height="15dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_circle_filled"/>
+                    android:background="@drawable/ic_circle_filled_red"/>
 
                 <TextView
                     android:id="@+id/tvExpensesLegend"
@@ -61,7 +66,7 @@
                     android:layout_height="15dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_circle_filled"/>
+                    android:background="@drawable/ic_circle_filled_green"/>
 
                 <TextView
                     android:id="@+id/tvIncomeLegend"
@@ -86,7 +91,7 @@
                     android:layout_height="15dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="5dp"
-                    android:background="@drawable/ic_circle_filled"/>
+                    android:background="@drawable/ic_circle_filled_yellow"/>
 
                 <TextView
                     android:id="@+id/tvSavingsLegend"
