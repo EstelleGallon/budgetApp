@@ -67,15 +67,17 @@ public class ExpenseLimit {
     public void setRepeatFrequency(String repeatFrequency){this.repeatFrequency =repeatFrequency;}
 
     public void setNotes(String notes){this.notes = notes;}
-
-
-    public boolean isExceeded(int monthIndex) {
-        if (exceededMonths == null || monthIndex < 0 || monthIndex >= exceededMonths.length)
-            return false;
-
-        Boolean value = exceededMonths[monthIndex];
-        return value != null && value;
+    public void setExceededMonths(Boolean[] exceededMonths) {
+        this.exceededMonths = exceededMonths;
     }
+
+    public Boolean isExceeded(int monthIndex) {
+        if (exceededMonths == null || monthIndex < 0 || monthIndex >= exceededMonths.length)
+            return null;
+
+        return exceededMonths[monthIndex];
+    }
+
 
 
 }

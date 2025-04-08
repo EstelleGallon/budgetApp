@@ -1,7 +1,10 @@
 package fr.enst.budgetapp.ui.budget;
 
+import static fr.enst.budgetapp.JsonLoader.evaluateExpenseLimits;
+
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +34,14 @@ import com.anychart.enums.LegendLayout;
 import com.anychart.enums.Position;
 import com.anychart.enums.TooltipPositionMode;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import fr.enst.budgetapp.Balances;
 import fr.enst.budgetapp.ExpenseLimit;
@@ -43,6 +50,7 @@ import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.SavingGoal;
 import fr.enst.budgetapp.SavingGoalAdapter;
+import fr.enst.budgetapp.Transaction;
 import fr.enst.budgetapp.databinding.FragmentBudgetBinding;
 
 public class budgetFragment extends Fragment {
@@ -114,14 +122,20 @@ public class budgetFragment extends Fragment {
 
          */
 
+
+        List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
         List<ExpenseLimit> expenseLimits = JsonLoader.loadExpenseLimits(getContext());
         Log.d("EXPENSE LIMIT", String.valueOf(expenseLimits.size()));
+
+        evaluateExpenseLimits(getContext(), expenseLimits, transactions);
 
         // Set up RecyclerView for expense limits
         RecyclerView recyclerViewExpenseLimits = root.findViewById(R.id.recyclerViewExpenseLimits);
         recyclerViewExpenseLimits.setLayoutManager(new LinearLayoutManager(getContext()));
         ExpenseLimitAdapter expenseLimitAdapter = new ExpenseLimitAdapter(expenseLimits, getContext());
         recyclerViewExpenseLimits.setAdapter(expenseLimitAdapter);
+
+
 
         recyclerViewExpenseLimits.setNestedScrollingEnabled(false); // Disable nested scrolling
 
@@ -219,4 +233,51 @@ public class budgetFragment extends Fragment {
         // Attach the chart to the AnyChartView
         barChart.setChart(cartesian);
     }
+
+
+
+
+    public static List<Pair<Date, Date>> generateRepeatedWindows(String startDateStr, String endDateStr, String frequency) {
+        List<Pair<Date, Date>> windows = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+
+        try {
+            Date originalStart = sdf.parse(startDateStr);
+            Date originalEnd = sdf.parse(endDateStr);
+
+            long durationMs = originalEnd.getTime() - originalStart.getTime();
+
+            Calendar currentStart = Calendar.getInstance();
+            currentStart.setTime(originalStart);
+
+            // Limit to a year after original start
+            Calendar oneYearLater = Calendar.getInstance();
+            oneYearLater.setTime(originalStart);
+            oneYearLater.add(Calendar.YEAR, 1);
+
+            while (currentStart.getTime().before(oneYearLater.getTime())) {
+                Date start = currentStart.getTime();
+                Date end = new Date(start.getTime() + durationMs);
+                windows.add(new Pair<>(start, end));
+
+                if (frequency.equalsIgnoreCase("Monthly")) {
+                    currentStart.add(Calendar.MONTH, 1);
+                } else if (frequency.equalsIgnoreCase("Weekly")) {
+                    currentStart.add(Calendar.WEEK_OF_YEAR, 1);
+                } else {
+                    break; // No repeat
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return windows;
+    }
+
+
+
+
+
+
 }

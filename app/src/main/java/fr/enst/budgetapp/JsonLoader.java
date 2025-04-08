@@ -2,9 +2,12 @@ package fr.enst.budgetapp;
 
 import static java.security.AccessController.getContext;
 
+import static fr.enst.budgetapp.ui.budget.budgetFragment.generateRepeatedWindows;
+
 import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
+import android.util.Pair;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +25,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import java.io.OutputStreamWriter;
@@ -31,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Locale;
 
 
 public class JsonLoader {
@@ -54,6 +64,7 @@ public class JsonLoader {
      */
 
 
+    /*
     public static List<Transaction> loadTransactions(Context context) {
         Gson gson = new Gson();
         Type transactionListType = new TypeToken<List<Transaction>>() {}.getType();
@@ -77,6 +88,41 @@ public class JsonLoader {
             return null;
         }
     }
+
+     */
+
+    public static List<Transaction> loadTransactions(Context context) {
+        Gson gson = new Gson();
+        Type transactionListType = new TypeToken<List<Transaction>>() {}.getType();
+        File file = new File(context.getFilesDir(), "transactions.json");
+
+        try {
+            // Step 1: If file doesn't exist in internal storage, copy from assets
+            if (!file.exists()) {
+                InputStream assetStream = context.getAssets().open("transactions.json");
+                FileOutputStream fos = new FileOutputStream(file);
+                byte[] buffer = new byte[1024];
+                int length;
+                while ((length = assetStream.read(buffer)) > 0) {
+                    fos.write(buffer, 0, length);
+                }
+                fos.close();
+                assetStream.close();
+                Log.d("JsonLoader", "transactions.json copied from assets to internal storage.");
+            }
+
+            // Step 2: Load from internal storage
+            FileInputStream fis = new FileInputStream(file);
+            InputStreamReader reader = new InputStreamReader(fis, StandardCharsets.UTF_8);
+            return gson.fromJson(reader, transactionListType);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
+
 
 
 
@@ -346,6 +392,8 @@ public class JsonLoader {
     }
 
 
+
+
     public static void saveExpenseLimits(Context context, List<ExpenseLimit> limits) {
         File file = new File(context.getFilesDir(), "expense_limits.json");
         try {
@@ -362,6 +410,130 @@ public class JsonLoader {
         List<ExpenseLimit> existing = loadExpenseLimits(context);
         return existing.size() + 1;
     }
+
+
+
+
+    public static void evaluateExpenseLimits(Context context, List<ExpenseLimit> limits, List<Transaction> transactions) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Date today = new Date();
+
+        for (ExpenseLimit limit : limits) {
+            Boolean[] exceeded = new Boolean[12];
+            Arrays.fill(exceeded, null);
+
+            List<Pair<Calendar, Calendar>> periods;
+            try {
+                periods = getApplicablePeriods(limit, today);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                continue;
+            }
+
+            for (Pair<Calendar, Calendar> period : periods) {
+                Calendar start = period.first;
+                Calendar end = period.second;
+                Log.d("START DATE", String.valueOf(start));
+                Log.d("END DATE", String.valueOf(end));
+
+                if (start.getTime().after(today)) continue;
+
+                double spent = 0.0;
+
+                for (Transaction tx : transactions) {
+                    if (!tx.getTransactionType().equalsIgnoreCase("Spending")) continue;
+                    if (!tx.getCategoryName().equalsIgnoreCase(limit.getCategoryName())) continue;
+
+                    Log.d("VERIFIES CONDITION", "True");
+                    Date txDate = tx.getDate();
+                    Log.d("DATE TRANSACTION", String.valueOf(txDate));
+                    if (txDate == null) continue;
+
+                    if (!txDate.before(start.getTime()) && !txDate.after(end.getTime())){
+                        Log.d("INCLUDED TX", String.valueOf(tx.getMoneyAmountDouble()));
+                        spent += tx.getMoneyAmountDouble();
+                        Log.d("SPENT", String.valueOf(spent));
+                    }
+                }
+
+                int month = start.get(Calendar.MONTH);
+                exceeded[month] = spent > limit.getAmount();
+
+                Log.d("LIMIT_DEBUG", "Window: " + sdf.format(start.getTime()) + " to " + sdf.format(end.getTime()));
+                Log.d("LIMIT_DEBUG", "Spent: " + spent + ", Limit: " + limit.getAmount());
+            }
+
+            limit.setExceededMonths(exceeded);
+        }
+
+        JsonLoader.saveExpenseLimits(context, limits);
+    }
+
+
+
+
+    private static List<Pair<Calendar, Calendar>> getApplicablePeriods(ExpenseLimit limit, Date today) throws ParseException {
+        List<Pair<Calendar, Calendar>> periods = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+        Calendar start = Calendar.getInstance();
+        start.setTime(sdf.parse(limit.getStartDate()));
+
+        Calendar endDate = Calendar.getInstance();
+        endDate.setTime(sdf.parse(limit.getEndDate()));
+
+        if (start == null || endDate == null) return periods;
+
+        Calendar pointer = (Calendar) start.clone();
+
+        switch (limit.getRepeatFrequency()) {
+            case "Never repeat":
+                if (!pointer.after(today)) {
+                    Calendar periodEnd = (Calendar) endDate.clone();
+                    periods.add(new Pair<>((Calendar) pointer.clone(), periodEnd));
+                    Log.d("NEVER REPEAT TX", limit.getCategoryName());
+                }
+                break;
+
+            case "Monthly":
+                while (!pointer.after(endDate) && !pointer.after(today)) {
+                    Calendar periodStart = (Calendar) pointer.clone();
+                    Calendar periodEnd = (Calendar) pointer.clone();
+                    periodEnd.add(Calendar.MONTH, 1);
+                    periods.add(new Pair<>(periodStart, periodEnd));
+                    pointer.add(Calendar.MONTH, 1);
+                    Log.d("MONTHLY REPEAT TX", limit.getCategoryName());
+                }
+                break;
+
+            case "Weekly":
+                while (!pointer.after(endDate) && !pointer.after(today)) {
+                    Calendar periodStart = (Calendar) pointer.clone();
+                    Calendar periodEnd = (Calendar) pointer.clone();
+                    periodEnd.add(Calendar.WEEK_OF_YEAR, 1);
+                    periods.add(new Pair<>(periodStart, periodEnd));
+                    pointer.add(Calendar.WEEK_OF_YEAR, 1);
+                    Log.d("WEEKLY REPEAT TX", limit.getCategoryName());
+                }
+                break;
+        }
+
+        return periods;
+    }
+
+
+
+    public static void refreshExpenseLimitStatus(Context context) {
+        List<Transaction> transactions = JsonLoader.loadTransactions(context);
+        List<ExpenseLimit> limits = JsonLoader.loadExpenseLimits(context);
+        evaluateExpenseLimits(context, limits, transactions);
+    }
+
+
+
+
+
+
 
 
 }

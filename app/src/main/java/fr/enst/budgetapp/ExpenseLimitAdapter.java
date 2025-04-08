@@ -51,12 +51,18 @@ public class ExpenseLimitAdapter extends RecyclerView.Adapter<ExpenseLimitAdapte
             monthView.setBackgroundResource(R.drawable.month_background);
             ((LinearLayout.LayoutParams) monthView.getLayoutParams()).setMargins(8, 0, 8, 0);
 
-            // Set background color based on expense limit status
-            if (expenseLimit.isExceeded(i)) {
-                monthView.setBackgroundColor(Color.RED); // Exceeded
+            Boolean status = expenseLimit.isExceeded(i);
+            if (status == null) {
+                // Month is out of range — no color
+                monthView.setBackgroundColor(Color.LTGRAY);
+            } else if (status) {
+                // Limit exceeded
+                monthView.setBackgroundColor(Color.RED);
             } else {
-                monthView.setBackgroundColor(Color.GREEN); // Not exceeded
+                // Limit respected
+                monthView.setBackgroundColor(Color.GREEN);
             }
+
 
             holder.llMonthsContainer.addView(monthView);
         }

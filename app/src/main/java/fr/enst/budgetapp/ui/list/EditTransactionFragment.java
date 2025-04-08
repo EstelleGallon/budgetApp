@@ -1,5 +1,7 @@
 package fr.enst.budgetapp.ui.list;
 
+import static fr.enst.budgetapp.JsonLoader.refreshExpenseLimitStatus;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import fr.enst.budgetapp.ExpenseLimit;
 import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 import fr.enst.budgetapp.Transaction;
@@ -233,6 +236,11 @@ public class EditTransactionFragment extends Fragment {
 
             if (saved) {
                 Toast.makeText(getContext(), "Transaction updated!", Toast.LENGTH_SHORT).show();
+                transactions = JsonLoader.loadTransactions(requireContext());
+                List<ExpenseLimit> limits = JsonLoader.loadExpenseLimits(requireContext());
+                JsonLoader.evaluateExpenseLimits(requireContext(), limits, transactions);
+
+                refreshExpenseLimitStatus(getContext());
             } else {
                 Toast.makeText(getContext(), "Failed to save changes.", Toast.LENGTH_SHORT).show();
             }
