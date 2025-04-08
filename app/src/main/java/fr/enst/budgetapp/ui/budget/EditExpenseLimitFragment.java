@@ -84,11 +84,22 @@ public class EditExpenseLimitFragment extends Fragment {
         // --- Back button ---
         btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-        // --- Delete button ---
         btnDelete.setOnClickListener(v -> {
-            // Optional: implement actual deletion here
-            Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_budgetFragment);
+            if (currentLimit != null) {
+                List<ExpenseLimit> allLimits = JsonLoader.loadExpenseLimits(requireContext());
+
+                allLimits.removeIf(limit -> limit.getId().equals(currentLimit.getId()));
+
+                for (int i = 0; i < allLimits.size(); i++) {
+                    allLimits.get(i).setId(String.valueOf(i + 1));
+                }
+
+                JsonLoader.saveExpenseLimits(requireContext(), allLimits);
+
+                Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_budgetFragment);
+            }
         });
+
 
         // --- Save button ---
         btnSave.setOnClickListener(v -> {
