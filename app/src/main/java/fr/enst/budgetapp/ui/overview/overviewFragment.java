@@ -115,10 +115,35 @@ public class overviewFragment extends Fragment {
         List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
         if (transactions == null) transactions = new ArrayList<>();
 
-        Collections.sort(transactions, (t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()));
 
-        //Take the 3 latest transactions to display in the overview page
-        List<Transaction> recent = transactions.subList(0, Math.min(3, transactions.size()));
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        Calendar today = Calendar.getInstance();
+
+        List<Transaction> pastOrToday = new ArrayList<>();
+        for (Transaction tx : transactions) {
+            try {
+                Date txDate = sdf.parse(tx.getTransactionDate());
+                if (!txDate.after(today.getTime())) {
+                    pastOrToday.add(tx);
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        Collections.sort(pastOrToday, (t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()));
+        List<Transaction> recent = pastOrToday.subList(0, Math.min(3, pastOrToday.size()));
+
+
+
+
+
+        //Collections.sort(transactions, (t1, t2) -> t2.getTransactionDate().compareTo(t1.getTransactionDate()));
+
+        //List<Transaction> recent = transactions.subList(0, Math.min(3, transactions.size()));
 
         RecyclerView recyclerView = root.findViewById(R.id.recyclerViewTransactions);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -132,8 +157,7 @@ public class overviewFragment extends Fragment {
 
         double upcomingTotal = balancesObj.checking;
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Calendar today = Calendar.getInstance();
+
         Calendar nextWeek = Calendar.getInstance();
         nextWeek.add(Calendar.DAY_OF_YEAR, 7);
 
