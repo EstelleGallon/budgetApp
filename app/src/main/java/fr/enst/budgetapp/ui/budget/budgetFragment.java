@@ -1,6 +1,7 @@
 package fr.enst.budgetapp.ui.budget;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,12 +104,18 @@ public class budgetFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
 
+        /*
         // Sample data for expense limits TODO: use actual data
         List<ExpenseLimit> expenseLimits = Arrays.asList(
                 new ExpenseLimit("Food", new boolean[]{true, false, false, true, false, false, true, false, false, true, false, false}),
                 new ExpenseLimit("Transport", new boolean[]{false, false, true, false, false, true, false, false, true, false, false, true}),
                 new ExpenseLimit("Entertainment", new boolean[]{false, true, false, false, true, false, false, true, false, false, true, false})
         );
+
+         */
+
+        List<ExpenseLimit> expenseLimits = JsonLoader.loadExpenseLimits(getContext());
+        Log.d("EXPENSE LIMIT", String.valueOf(expenseLimits.size()));
 
         // Set up RecyclerView for expense limits
         RecyclerView recyclerViewExpenseLimits = root.findViewById(R.id.recyclerViewExpenseLimits);

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "categoryName": "Groceries",
+    "amount": 300.0,
+    "startDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "repeatFrequency": "Monthly",
+    "notes": "Groceries spending cap for the year.",
+    "exceededMonths": [true, false, false, true, false, false, true, false, false, true, false, false]
+  },
+  {
+    "id": "2",
+    "categoryName": "Transportation",
+    "amount": 150.0,
+    "startDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "repeatFrequency": "Monthly",
+    "notes": "Commuting and gas expenses.",
+    "exceededMonths": [false, false, true, false, false, true, false, false, true, false, false, true]
+  },
+  {
+    "id": "3",
+    "categoryName": "Entertainment",
+    "amount": 100.0,
+    "startDate": "2024-01-01",
+    "endDate": "2024-12-31",
+    "repeatFrequency": "Monthly",
+    "notes": "Movies, streaming, and outings.",
+    "exceededMonths": [false, true, false, false, true, false, false, true, false, false, true, false]
+  }
+]

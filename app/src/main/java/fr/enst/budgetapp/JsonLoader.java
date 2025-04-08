@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -300,6 +301,67 @@ public class JsonLoader {
 
 
 
+
+
+
+
+    // In JsonLoader.java
+
+
+    public static List<ExpenseLimit> loadExpenseLimits(Context context) {
+        File file = new File(context.getFilesDir(), "expense_limits.json");
+
+        if (file.exists()) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try (FileInputStream fis = new FileInputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int len;
+                while ((len = fis.read(buffer)) != -1) {
+                    baos.write(buffer, 0, len);
+                }
+                String json = baos.toString(StandardCharsets.UTF_8.name());
+                Type listType = new TypeToken<List<ExpenseLimit>>() {}.getType();
+                return new Gson().fromJson(json, listType);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            InputStream is = context.getAssets().open("expense_limits.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+
+            String json = new String(buffer, StandardCharsets.UTF_8);
+            Type listType = new TypeToken<List<ExpenseLimit>>() {}.getType();
+            return new Gson().fromJson(json, listType);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
+
+
+    public static void saveExpenseLimits(Context context, List<ExpenseLimit> limits) {
+        File file = new File(context.getFilesDir(), "expense_limits.json");
+        try {
+            FileWriter writer = new FileWriter(file);
+            new Gson().toJson(limits, writer);
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static int getNextExpenseLimitId(Context context) {
+        List<ExpenseLimit> existing = loadExpenseLimits(context);
+        return existing.size() + 1;
+    }
 
 
 }

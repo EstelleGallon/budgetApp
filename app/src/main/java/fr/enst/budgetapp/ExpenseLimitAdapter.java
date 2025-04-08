@@ -66,12 +66,27 @@ public class ExpenseLimitAdapter extends RecyclerView.Adapter<ExpenseLimitAdapte
             // Pass the expense limit data to the EditExpenseLimitFragment
             Bundle bundle = new Bundle();
             bundle.putString("CATEGORY_NAME", expenseLimit.getCategoryName());
-            bundle.putBooleanArray("EXCEEDED_MONTHS", expenseLimit.getExceededMonths());
+            bundle.putStringArray("EXCEEDED_MONTHS", convertBooleanArrayToString(expenseLimit.getExceededMonths()));
+
 
             // Navigate to EditExpenseLimitFragment
             Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_editExpenseLimitFragment, bundle);
         });
     }
+
+
+
+
+    private String[] convertBooleanArrayToString(Boolean[] input) {
+        String[] result = new String[input.length];
+        for (int i = 0; i < input.length; i++) {
+            result[i] = (input[i] == null) ? "null" : input[i].toString();
+        }
+        return result;
+    }
+
+
+
 
     @Override
     public int getItemCount() {
