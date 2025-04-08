@@ -14,62 +14,102 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import java.util.List;
+
+import fr.enst.budgetapp.ExpenseLimit;
+import fr.enst.budgetapp.JsonLoader;
 import fr.enst.budgetapp.R;
 
 public class EditExpenseLimitFragment extends Fragment {
+
+    private ExpenseLimit currentLimit;
+    private EditText etEditExpenseLimitAmount;
+    private EditText etEditExpenseLimitDate;
+    private EditText etEditExpenseLimitNotes;
+    private TextView tvCategoryName;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_edit_expense_limit, container, false);
 
-        // Initialize UI elements
-        EditText etEditExpenseLimitAmount = root.findViewById(R.id.etEditExpenseLimitAmount);
-        EditText etEditExpenseLimitDate = root.findViewById(R.id.etEditExpenseLimitDate);
-        EditText etEditExpenseLimitNotes = root.findViewById(R.id.etEditExpenseLimitNotes);
-
+        // UI references
+        etEditExpenseLimitAmount = root.findViewById(R.id.etEditExpenseLimitAmount);
+        etEditExpenseLimitDate = root.findViewById(R.id.etEditExpenseLimitDate);
+        etEditExpenseLimitNotes = root.findViewById(R.id.etEditExpenseLimitNotes);
+        tvCategoryName = root.findViewById(R.id.tvEditChooseCategory);
         Button btnBack = root.findViewById(R.id.btnBackBudget);
         Button btnDelete = root.findViewById(R.id.btnDeleteExpenseLimit);
         Button btnSave = root.findViewById(R.id.btnSaveExpenseLimit);
-
-        // --- Handle navigation to Category page ---
         ImageView ivChooseCategory = root.findViewById(R.id.ivEditChooseCategory);
-        ivChooseCategory.setOnClickListener(v -> {
+
+        Bundle args = getArguments();
+
+        // Load the correct limit
+        if (args != null) {
+            String limitId = args.getString("EXPENSE_LIMIT_ID");
+            List<ExpenseLimit> limits = JsonLoader.loadExpenseLimits(requireContext());
+            for (ExpenseLimit limit : limits) {
+                if (limit.getId().equals(limitId)) {
+                    currentLimit = limit;
+                    break;
+                }
+            }
+
+            // Restore values from previous state if available
+            etEditExpenseLimitAmount.setText(args.getString("FORM_AMOUNT", currentLimit != null ? String.valueOf(currentLimit.getAmount()) : ""));
+            etEditExpenseLimitDate.setText(args.getString("FORM_DATE", currentLimit != null ? currentLimit.getEndDate() : ""));
+            etEditExpenseLimitNotes.setText(args.getString("FORM_NOTES", currentLimit != null ? currentLimit.getNotes() : ""));
+            tvCategoryName.setText(args.getString("CATEGORY_NAME", currentLimit != null ? currentLimit.getCategoryName() : ""));
+        }
+
+        // --- Category selection navigation ---
+        View.OnClickListener chooseCategoryListener = v -> {
             Bundle bundle = new Bundle();
             bundle.putString("PREVIOUS_FRAGMENT", "editExpenseLimit");
+
+            // Save current form state before navigating away
+            bundle.putString("EXPENSE_LIMIT_ID", currentLimit.getId());
+            bundle.putString("FORM_AMOUNT", etEditExpenseLimitAmount.getText().toString());
+            bundle.putString("FORM_DATE", etEditExpenseLimitDate.getText().toString());
+            bundle.putString("FORM_NOTES", etEditExpenseLimitNotes.getText().toString());
+            bundle.putString("CATEGORY_NAME", tvCategoryName.getText().toString());
+
             Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_categoriesFragment, bundle);
-        });
+        };
 
-        TextView tvCategoryName = root.findViewById(R.id.tvEditChooseCategory);
-        tvCategoryName.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putString("PREVIOUS_FRAGMENT", "editExpenseLimit");
-            Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_categoriesFragment, bundle);
-        });
+        ivChooseCategory.setOnClickListener(chooseCategoryListener);
+        tvCategoryName.setOnClickListener(chooseCategoryListener);
 
-
-        // --- Handle Back button ---
+        // --- Back button ---
         btnBack.setOnClickListener(v -> Navigation.findNavController(v).navigateUp());
 
-        // --- Handle Delete button ---
+        // --- Delete button ---
         btnDelete.setOnClickListener(v -> {
-            // TODO: Implement delete functionality
+            // Optional: implement actual deletion here
             Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_budgetFragment);
         });
 
-        // --- Handle Save button ---
+        // --- Save button ---
         btnSave.setOnClickListener(v -> {
-            // TODO: Save the edited expense limit
+            if (currentLimit != null) {
+                currentLimit.setAmount(Double.parseDouble(etEditExpenseLimitAmount.getText().toString()));
+                currentLimit.setEndDate(etEditExpenseLimitDate.getText().toString());
+                currentLimit.setNotes(etEditExpenseLimitNotes.getText().toString());
+                currentLimit.setCategoryName(tvCategoryName.getText().toString());
+
+                List<ExpenseLimit> allLimits = JsonLoader.loadExpenseLimits(requireContext());
+                for (int i = 0; i < allLimits.size(); i++) {
+                    if (allLimits.get(i).getId().equals(currentLimit.getId())) {
+                        allLimits.set(i, currentLimit);
+                        break;
+                    }
+                }
+
+                JsonLoader.saveExpenseLimits(requireContext(), allLimits);
+            }
             Navigation.findNavController(v).navigate(R.id.action_editExpenseLimitFragment_to_budgetFragment);
         });
-
-        // --- Category Selection ---
-
-        if (getArguments() != null) {
-            String categoryName = getArguments().getString("CATEGORY_NAME");
-            if (categoryName != null)
-                tvCategoryName.setText(categoryName);
-        }
 
         return root;
     }

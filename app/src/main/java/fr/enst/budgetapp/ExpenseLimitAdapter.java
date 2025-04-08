@@ -61,17 +61,15 @@ public class ExpenseLimitAdapter extends RecyclerView.Adapter<ExpenseLimitAdapte
             holder.llMonthsContainer.addView(monthView);
         }
 
-        // --- Handle navigation to edit expense limit ---
         holder.btnEditExpenseLimit.setOnClickListener(v -> {
-            // Pass the expense limit data to the EditExpenseLimitFragment
             Bundle bundle = new Bundle();
+            bundle.putString("EXPENSE_LIMIT_ID", String.valueOf(expenseLimit.getId()));  // 🔑 must have
             bundle.putString("CATEGORY_NAME", expenseLimit.getCategoryName());
             bundle.putStringArray("EXCEEDED_MONTHS", convertBooleanArrayToString(expenseLimit.getExceededMonths()));
 
-
-            // Navigate to EditExpenseLimitFragment
             Navigation.findNavController(v).navigate(R.id.action_budgetFragment_to_editExpenseLimitFragment, bundle);
         });
+
     }
 
 

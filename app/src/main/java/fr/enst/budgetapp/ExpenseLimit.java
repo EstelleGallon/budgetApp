@@ -2,14 +2,14 @@ package fr.enst.budgetapp;
 
 
 public class ExpenseLimit {
-    private final String id;
-    private final String categoryName;
-    private final double amount;
-    private final String startDate;
-    private final String endDate;
-    private final String repeatFrequency;
-    private final String notes;
-    private final Boolean[] exceededMonths;
+    private String id;
+    private String categoryName;
+    private double amount;
+    private String startDate;
+    private String endDate;
+    private String repeatFrequency;
+    private String notes;
+    private Boolean[] exceededMonths;
 
 
     public ExpenseLimit(String id, String categoryName, double amount, String startDate, String endDate, String repeatFrequency, String notes, Boolean[] exceededMonths) {
@@ -54,6 +54,19 @@ public class ExpenseLimit {
     public Boolean[] getExceededMonths() {
         return exceededMonths;
     }
+
+
+    public void setId(String id){this.id = id;}
+
+    public void setCategoryName(String categoryName){this.categoryName = categoryName;}
+
+    public void setAmount(double amount){this.amount = amount;}
+
+    public void setEndDate(String endDate){this.endDate =endDate;}
+
+    public void setRepeatFrequency(String repeatFrequency){this.repeatFrequency =repeatFrequency;}
+
+    public void setNotes(String notes){this.notes = notes;}
 
 
     public boolean isExceeded(int monthIndex) {
