@@ -95,6 +95,8 @@ public class overviewFragment extends Fragment {
         ViewPager2 viewPager = root.findViewById(R.id.vpAccountBalances);
 
 
+        JsonLoader.recomputeBalancesFromTransactions(requireContext());
+
         Balances balancesObj = JsonLoader.loadBalances(getContext());
 
         String checkingFormatted = String.format("%,.2f€", balancesObj.checking);
@@ -195,6 +197,8 @@ public class overviewFragment extends Fragment {
 
 
         tvMonthYearSpendingsPerCategory= root.findViewById(R.id.tvMonthYear);
+
+
 
 
 
@@ -560,10 +564,52 @@ public class overviewFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
         APIlib.getInstance().setActiveAnyChartView(barChart);
         updateBarChart();
         APIlib.getInstance().setActiveAnyChartView(lineChart);
         updateLineChart();
+
+
+//        Balances balancesObj = JsonLoader.loadBalances(getContext());
+//
+//        String checkingFormatted = String.format("%,.2f€", balancesObj.checking);
+//        String savingsFormatted = String.format("%,.2f€", balancesObj.savings);
+//
+//        double upcomingTotal = balancesObj.checking;
+//
+//        List<Transaction> transactions = JsonLoader.loadTransactions(getContext());
+//        if (transactions == null) transactions = new ArrayList<>();
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+//        Calendar today = Calendar.getInstance();
+//        Calendar nextWeek = Calendar.getInstance();
+//        nextWeek.add(Calendar.DAY_OF_YEAR, 7);
+//
+//        for (Transaction tx : transactions) {
+//            if ("Spending".equalsIgnoreCase(tx.getTransactionType())) {
+//                try {
+//                    Date txDate = sdf.parse(tx.getTransactionDate());
+//                    Calendar txCal = Calendar.getInstance();
+//                    txCal.setTime(txDate);
+//
+//                    if (!txCal.before(today) && txCal.before(nextWeek)) {
+//                        upcomingTotal -= tx.getMoneyAmountDouble();
+//                    }
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        List<Pair<String, String>> balances = Arrays.asList(
+//                new Pair<>("Checking Account", checkingFormatted),
+//                new Pair<>("Savings Account", savingsFormatted)
+//        );
+//
+//        ViewPager2 viewPager = binding.vpAccountBalances;
+//        AccountBalanceAdapter adapter = new AccountBalanceAdapter(balances, upcomingTotal);
+//        viewPager.setAdapter(adapter);
     }
 
 
