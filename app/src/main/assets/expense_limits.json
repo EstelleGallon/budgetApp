@@ -2,7 +2,7 @@
   {
     "id": "1",
     "categoryName": "Groceries",
-    "amount": 300.0,
+    "amount": 80.0,
     "startDate": "2025-02-01",
     "endDate": "2025-02-10",
     "repeatFrequency": "Weekly",

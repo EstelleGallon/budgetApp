@@ -471,54 +471,56 @@ public class JsonLoader {
 
 
 
+    
     public static List<Pair<Calendar, Calendar>> getApplicablePeriods(ExpenseLimit limit, Date today) throws ParseException {
         List<Pair<Calendar, Calendar>> periods = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
-        Calendar start = Calendar.getInstance();
-        start.setTime(sdf.parse(limit.getStartDate()));
+        Calendar startCal = Calendar.getInstance();
+        startCal.setTime(sdf.parse(limit.getStartDate()));
 
-        Calendar endDate = Calendar.getInstance();
-        endDate.setTime(sdf.parse(limit.getEndDate()));
+        Calendar endCal = Calendar.getInstance();
+        endCal.setTime(sdf.parse(limit.getEndDate()));
 
-        if (start == null || endDate == null) return periods;
-
-        Calendar pointer = (Calendar) start.clone();
+        long durationMs = endCal.getTimeInMillis() - startCal.getTimeInMillis();
+        Calendar pointer = (Calendar) startCal.clone();
+        Calendar oneYearLater = (Calendar) startCal.clone();
+        oneYearLater.add(Calendar.YEAR, 1);
 
         switch (limit.getRepeatFrequency()) {
             case "Never repeat":
                 if (!pointer.after(today)) {
-                    Calendar periodEnd = (Calendar) endDate.clone();
-                    periods.add(new Pair<>((Calendar) pointer.clone(), periodEnd));
+                    periods.add(new Pair<>((Calendar) startCal.clone(), (Calendar) endCal.clone()));
                     Log.d("NEVER REPEAT TX", limit.getCategoryName());
                 }
                 break;
 
-            case "Monthly":
-                while (!pointer.after(endDate) && !pointer.after(today)) {
-                    Calendar periodStart = (Calendar) pointer.clone();
-                    Calendar periodEnd = (Calendar) pointer.clone();
-                    periodEnd.add(Calendar.MONTH, 1);
-                    periods.add(new Pair<>(periodStart, periodEnd));
-                    pointer.add(Calendar.MONTH, 1);
-                    Log.d("MONTHLY REPEAT TX", limit.getCategoryName());
-                }
-                break;
-
             case "Weekly":
-                while (!pointer.after(endDate) && !pointer.after(today)) {
+                while (pointer.before(oneYearLater)) {
                     Calendar periodStart = (Calendar) pointer.clone();
                     Calendar periodEnd = (Calendar) pointer.clone();
-                    periodEnd.add(Calendar.WEEK_OF_YEAR, 1);
+                    periodEnd.setTimeInMillis(periodStart.getTimeInMillis() + durationMs);
                     periods.add(new Pair<>(periodStart, periodEnd));
                     pointer.add(Calendar.WEEK_OF_YEAR, 1);
                     Log.d("WEEKLY REPEAT TX", limit.getCategoryName());
+                }
+                break;
+
+            case "Monthly":
+                while (pointer.before(oneYearLater)) {
+                    Calendar periodStart = (Calendar) pointer.clone();
+                    Calendar periodEnd = (Calendar) pointer.clone();
+                    periodEnd.setTimeInMillis(periodStart.getTimeInMillis() + durationMs);
+                    periods.add(new Pair<>(periodStart, periodEnd));
+                    pointer.add(Calendar.MONTH, 1);
+                    Log.d("MONTHLY REPEAT TX", limit.getCategoryName());
                 }
                 break;
         }
 
         return periods;
     }
+
 
 
 
