@@ -22,7 +22,7 @@
   {
     "id": 3,
     "transactionType": "Spending",
-    "categoryName": "Transport",
+    "categoryName": "Transportation",
     "moneyAmount": "5,00€",
     "transactionDate": "2025-03-10",
     "repeatFrequency": "Never",
@@ -32,8 +32,8 @@
   {
     "id": 4,
     "transactionType": "Spending",
-    "categoryName": "Transport",
-    "moneyAmount": "20,00€",
+    "categoryName": "Transportation",
+    "moneyAmount": "160,00€",
     "transactionDate": "2025-03-15",
     "repeatFrequency": "Never",
     "notification": false,
@@ -64,7 +64,7 @@
     "transactionType": "Spending",
     "categoryName": "Transportation",
     "moneyAmount": "30,00€",
-    "transactionDate": "2025-04-11",
+    "transactionDate": "2025-04-28",
     "repeatFrequency": "Never",
     "notification": false,
     "notes": "Transportation card"
@@ -76,6 +76,26 @@
     "categoryName": "Social Security Benefits",
     "moneyAmount": "400,00€",
     "transactionDate": "2025-04-04",
+    "repeatFrequency": "Never",
+    "notification": false,
+    "notes": ""
+  },
+  {
+    "id": 9,
+    "transactionType": "Spending",
+    "categoryName": "Groceries",
+    "moneyAmount": "100,00€",
+    "transactionDate": "2025-02-05",
+    "repeatFrequency": "Never",
+    "notification": false,
+    "notes": ""
+  },
+  {
+    "id": 10,
+    "transactionType": "Spending",
+    "categoryName": "Entertainment",
+    "moneyAmount": "60,00€",
+    "transactionDate": "2025-01-15",
     "repeatFrequency": "Never",
     "notification": false,
     "notes": ""

@@ -1,6 +1,9 @@
 package fr.enst.budgetapp;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ExpenseLimit {
     private String id;
     private String categoryName;
@@ -10,6 +13,11 @@ public class ExpenseLimit {
     private String repeatFrequency;
     private String notes;
     private Boolean[] exceededMonths;
+
+
+
+
+
 
 
     public ExpenseLimit(String id, String categoryName, double amount, String startDate, String endDate, String repeatFrequency, String notes, Boolean[] exceededMonths) {
@@ -67,6 +75,8 @@ public class ExpenseLimit {
     public void setRepeatFrequency(String repeatFrequency){this.repeatFrequency =repeatFrequency;}
 
     public void setNotes(String notes){this.notes = notes;}
+
+
     public void setExceededMonths(Boolean[] exceededMonths) {
         this.exceededMonths = exceededMonths;
     }

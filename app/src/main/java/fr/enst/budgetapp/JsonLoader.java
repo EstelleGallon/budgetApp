@@ -351,7 +351,6 @@ public class JsonLoader {
 
 
 
-    // In JsonLoader.java
 
 
     public static List<ExpenseLimit> loadExpenseLimits(Context context) {
@@ -472,7 +471,7 @@ public class JsonLoader {
 
 
 
-    private static List<Pair<Calendar, Calendar>> getApplicablePeriods(ExpenseLimit limit, Date today) throws ParseException {
+    public static List<Pair<Calendar, Calendar>> getApplicablePeriods(ExpenseLimit limit, Date today) throws ParseException {
         List<Pair<Calendar, Calendar>> periods = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
 
