@@ -471,7 +471,7 @@ public class JsonLoader {
 
 
 
-    
+
     public static List<Pair<Calendar, Calendar>> getApplicablePeriods(ExpenseLimit limit, Date today) throws ParseException {
         List<Pair<Calendar, Calendar>> periods = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);

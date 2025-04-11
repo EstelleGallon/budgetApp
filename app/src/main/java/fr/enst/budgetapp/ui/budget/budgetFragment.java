@@ -316,6 +316,8 @@ public class budgetFragment extends Fragment {
                 continue;
             }
 
+
+
             for (Pair<Calendar, Calendar> window : periods) {
                 Date windowStart = window.first.getTime();
                 Date windowEnd = window.second.getTime();
@@ -337,8 +339,14 @@ public class budgetFragment extends Fragment {
                 boolean isCurrentMonth = currentMonth.get(Calendar.YEAR) == calendar.get(Calendar.YEAR)
                         && currentMonth.get(Calendar.MONTH) == calendar.get(Calendar.MONTH);
 
+
+
+                if (!(windowEnd.before(selectedMonthStart) || windowStart.after(selectedMonthEnd)) &&
+                        (!isCurrentMonth || !windowStart.after(today)) && !windowStart.after(today)) {
+
+
                 //if (!windowEnd.before(selectedMonthStart) && windowEnd.before(nextMonthStart.getTime())){
-                if (!(windowEnd.before(selectedMonthStart) || windowStart.after(selectedMonthEnd))){
+               // if (!(windowEnd.before(selectedMonthStart) || windowStart.after(selectedMonthEnd))){
 
                     double totalSpent = 0.0;
 
@@ -361,11 +369,13 @@ public class budgetFragment extends Fragment {
                             Date normStart = normalizeDate(windowStart);
                             Date normEnd = normalizeDate(windowEnd);
 
-                            if (!windowEnd.before(selectedMonthStart) && windowEnd.compareTo(nextMonthStart.getTime()) <= 0) {
-                                if (isCurrentMonth && windowEnd.after(today)) {
-                                    Log.d("DEBUG_SKIP", "Skipping window ending after today in current month: " + windowEnd);
-                                    continue;
-                                    }
+                            if (!(windowEnd.before(selectedMonthStart) || windowStart.after(selectedMonthEnd))) {
+
+
+                                Log.d("WINDOW_PASS", " Window passed for category " + limit.getCategoryName()
+                                        + ": " + windowStart + " to " + windowEnd);
+
+
 
                                 if (isCurrentMonth && txDate.after(today)) {
                                     Log.d("DEBUG_SKIP_TX", "Skipping future transaction in current month: " + txDate);
