@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,15 +19,18 @@ public class EditCategoryAdapter extends RecyclerView.Adapter<EditCategoryAdapte
     private final View.OnClickListener nameClickListener;
     private final View.OnClickListener colorClickListener;
     private final View.OnClickListener deleteClickListener;
+    private final View.OnClickListener addCatClickListener;
 
     public EditCategoryAdapter(List<Category> categories,
                                View.OnClickListener nameClickListener,
                                View.OnClickListener colorClickListener,
-                               View.OnClickListener deleteClickListener) {
+                               View.OnClickListener deleteClickListener,
+                               View.OnClickListener addCatClickListener) {
         this.categories = categories;
         this.nameClickListener = nameClickListener;
         this.colorClickListener = colorClickListener;
         this.deleteClickListener = deleteClickListener;
+        this.addCatClickListener = addCatClickListener;
     }
 
     @Override
@@ -58,6 +62,7 @@ public class EditCategoryAdapter extends RecyclerView.Adapter<EditCategoryAdapte
             if (deleteClickListener != null)
                 deleteClickListener.onClick(v);
         });
+
 
     }
 

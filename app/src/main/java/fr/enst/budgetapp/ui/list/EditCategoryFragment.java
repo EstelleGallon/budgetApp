@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -34,23 +36,25 @@ public class EditCategoryFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.recyclerViewEditCategories);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        /*
-        // Create a list of categories
-        List<Category> categoryList = new ArrayList<>();
-        categoryList.add(new Category("Groceries", Color.parseColor("#FAA9D8"), R.drawable.ic_circle_filled));
-        categoryList.add(new Category("Entertainment", Color.parseColor("#8FD4FA"), R.drawable.ic_circle_filled));
-        categoryList.add(new Category("Transportation", Color.parseColor("#A8FA91"), R.drawable.ic_circle_filled));
-        categoryList.add(new Category("Healthcare", Color.parseColor("#F9FA97"), R.drawable.ic_circle_filled));
-        categoryList.add(new Category("Utilities", Color.parseColor("#CCAAFA"), R.drawable.ic_circle_filled));
-
-        */
-
         List<Category> categoryList = JsonLoader.loadCategories(getContext());
 
         View.OnClickListener nameClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 1) user can type new name for category
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Rename Category");
+                final EditText input = new EditText(getContext());
+                builder.setView(input);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newName = input.getText().toString();
+                        System.out.println(newName);
+                        // TODO: save the new name
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
             }
         };
 
@@ -107,6 +111,34 @@ public class EditCategoryFragment extends Fragment {
             }
         };
 
+        View.OnClickListener addCatClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Add New Category");
+
+                final EditText input = new EditText(getContext());
+                builder.setView(input);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newName = input.getText().toString();
+                        if (!newName.isEmpty()) {
+                            Category newCategory = new Category(newName, Color.parseColor("#FFFFFF"), R.drawable.ic_circle_filled);
+                            System.out.println("add new category??");
+                            categoryList.add(newCategory);
+                            // TODO: "add new category";
+                        }
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.show();
+            }
+        };
+        LinearLayout addNewCategory = rootView.findViewById(R.id.llAddCategory);
+        addNewCategory.setOnClickListener(addCatClickListener);
+
 
 
         Button saveBtn = rootView.findViewById(R.id.btnSaveCategories);
@@ -139,10 +171,11 @@ public class EditCategoryFragment extends Fragment {
                 categoryList,
                 nameClickListener,
                 colorClickListener,
-                deleteClickListener);
+                deleteClickListener,
+                addCatClickListener);
         recyclerView.setAdapter(adapter);
 
-        // TODO: handle new category
+
 
         return rootView;
     }

@@ -62,7 +62,7 @@ public class DateTransactionsAdapter extends RecyclerView.Adapter<DateTransactio
         }
 
         // Set up the inner RecyclerView for transactions
-        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions, false);
+        TransactionAdapter transactionAdapter = new TransactionAdapter(transactions, false, "list");
         holder.transactionRecyclerView.setAdapter(transactionAdapter);
     }
 

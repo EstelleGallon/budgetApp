@@ -13,19 +13,22 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
     private final List<Transaction> transactions;
     private boolean showDate;
+    private String currentFragment = "";
 
     public TransactionAdapter(List<Transaction> transactions) {
         this.transactions = transactions;
         this.showDate = true;
     }
 
-    public TransactionAdapter(List<Transaction> transactions, boolean showDate) {
+    public TransactionAdapter(List<Transaction> transactions, boolean showDate, String currentFragment) {
         this.transactions = transactions;
         this.showDate = showDate;
+        this.currentFragment = currentFragment;
     }
 
     @NonNull
@@ -80,9 +83,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
             bundle.putBoolean("NOTIFICATION", selectedTx.getNotification());
             bundle.putString("NOTES", selectedTx.getNotes());
 
-            Navigation.findNavController(v).navigate(
-                    R.id.action_listFragment_to_editTransactionFragment, bundle
-            );
+            if (Objects.equals(currentFragment, "list")) {
+                Navigation.findNavController(v).navigate(
+                        R.id.action_listFragment_to_editTransactionFragment, bundle
+                );
+            }
+
         });
 
 
