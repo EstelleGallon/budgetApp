@@ -28,6 +28,15 @@ import fr.enst.budgetapp.R;
 
 public class EditCategoryFragment extends Fragment {
 
+    private int getRandomColor() {
+        float hue = new java.util.Random().nextInt(360);
+        float saturation = 0.5f + new java.util.Random().nextFloat() * 0.5f;
+        float brightness = 0.7f + new java.util.Random().nextFloat() * 0.3f;
+        return Color.HSVToColor(new float[]{hue, saturation, brightness});
+    }
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -125,10 +134,14 @@ public class EditCategoryFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         String newName = input.getText().toString();
                         if (!newName.isEmpty()) {
-                            Category newCategory = new Category(newName, Color.parseColor("#FFFFFF"), R.drawable.ic_circle_filled);
+                            int randomColor = getRandomColor();
+                            Category newCategory = new Category(newName, randomColor, R.drawable.ic_circle_filled);
                             System.out.println("add new category??");
                             categoryList.add(newCategory);
                             // TODO: "add new category";
+                            recyclerView.getAdapter().notifyItemInserted(categoryList.size() - 1);
+                            recyclerView.scrollToPosition(categoryList.size() - 1);
+
                         }
                     }
                 });
